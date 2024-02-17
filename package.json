@@ -1,0 +1,20 @@
+{
+  "name": "maki",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "scripts": {
+    "dev": "rspack dev",
+    "build": "rspack build"
+  },
+  "dependencies": {
+    "react": "^18.2.0",
+    "typescript": "^5.3.3"
+  },
+  "devDependencies": {
+    "@rspack/cli": "^0.5.4",
+    "@rspack/core": "^0.5.4",
+    "@types/node": "^18",
+    "ts-node": "^10.9.2"
+  }
+}
