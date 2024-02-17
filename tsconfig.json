@@ -4,9 +4,10 @@
         "isolatedModules": true,
         "esModuleInterop": true,
         "allowJs": true,
+        "jsx": "react-jsx",
     },
     "include": [
-        "src/**/*.ts"
+        "src"
     ],
     "exclude": [
         "node_modules",

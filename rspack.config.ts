@@ -6,7 +6,7 @@ export default defineConfig({
     devtool: 'source-map',
     context: path.resolve(__dirname, 'src'),
     entry: {
-        'main': './main.ts',
+        'main': './main.tsx',
     },
     output: {
         path: path.resolve(__dirname, './dist'),
@@ -15,9 +15,11 @@ export default defineConfig({
     optimization: {
         minimize: false,
         chunkIds: 'deterministic',
+        mergeDuplicateChunks: true,
     },
     resolve: {
-        extensions: ['.ts', '.js'],
+        extensions: ['.ts', '.js', '.tsx', '.jsx'],
+        tsConfigPath: path.resolve(__dirname, 'tsconfig.json'),
     },
     watchOptions: {
         ignored: /node_modules/,
@@ -26,19 +28,24 @@ export default defineConfig({
     module: {
         rules: [
             {
-                test: /\.(t|j)sx?$/,
                 exclude: /node_modules/,
-                use: {
-                    loader: 'builtin:swc-loader',
-                    options: {
-                        jsc: {
-                            parser: {
-                                syntax: 'typescript',
-                                jsx: true,
+                oneOf: [
+                    {
+                        test: /\.(t|j)sx?$/,
+                        exclude: /node_modules/,
+                        use: {
+                            loader: 'builtin:swc-loader',
+                            options: {
+                                jsc: {
+                                    parser: {
+                                        syntax: 'typescript',
+                                        jsx: 'react-jsx',
+                                    },
+                                },
                             },
                         },
                     },
-                },
+                ],
             },
         ],
     },
