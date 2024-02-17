@@ -3,6 +3,7 @@ import path from 'path';
 
 export default defineConfig({
     mode: 'development',
+    devtool: 'source-map',
     context: path.resolve(__dirname, 'src'),
     entry: {
         'main': './main.ts',
@@ -40,5 +41,11 @@ export default defineConfig({
                 },
             },
         ],
+    },
+    devServer: {
+        port: 3030,
+        hot: true,
+        https: true,
+        historyApiFallback: true,
     },
 });
