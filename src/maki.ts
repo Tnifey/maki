@@ -1,8 +1,9 @@
 import { html, render } from "lit-html";
 import { atom, createStore, getDefaultStore } from "jotai/vanilla";
 
-export { atom } from "jotai/vanilla";
-export { html } from "lit-html";
+export { atom, getDefaultStore } from "jotai/vanilla";
+export { html, nothing, noChange, svg } from "lit-html";
+export * from './directives';
 
 export type StoreType = ReturnType<typeof createStore>;
 export type TemplateFn<Attrs> = (attrs: Attrs) => ReturnType<typeof html>;
