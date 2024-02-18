@@ -6,7 +6,7 @@ export default defineConfig({
     devtool: 'source-map',
     context: path.resolve(__dirname, 'src'),
     entry: {
-        'main': './main.tsx',
+        'main': './main.ts',
     },
     output: {
         path: path.resolve(__dirname, './dist'),

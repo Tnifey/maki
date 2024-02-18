@@ -4,8 +4,7 @@ import { atom, component } from './maki';
 const shared = atom<any[]>([]);
 
 component(($) => {
-    const atomic = atom([]);
-    const [list, setList] = $.use(atomic);
+    const [list, setList] = $.use(shared);
 
     function add() {
         setList((c) => [...c, c.length]);
