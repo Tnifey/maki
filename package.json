@@ -1,7 +1,7 @@
 {
   "name": "maki",
-  "version": "1.0.0",
-  "main": "dist/main.js",
+  "version": "0.0.1",
+  "main": "src/maki.ts",
   "license": "MIT",
   "scripts": {
     "dev": "rspack dev --node-env=development",
