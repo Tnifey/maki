@@ -1,7 +1,8 @@
 import { html, render } from "lit-html";
 import { atom, createStore, getDefaultStore } from "jotai/vanilla";
 
-export * from "jotai/vanilla";
+export { atom } from "jotai/vanilla";
+export { html } from "lit-html";
 
 export type StoreType = ReturnType<typeof createStore>;
 export type TemplateFn<Attrs> = (attrs: Attrs) => ReturnType<typeof html>;
@@ -90,4 +91,36 @@ export function component<Attrs>(construct: ($: MakiComponent<Attrs>) => Templat
             return this;
         }
     };
+}
+
+/**
+ * Use atom without attaching to a component
+ * @param value - Atom
+ * @returns Atom value and setter
+ * @example
+ * const $list = atom<string[]>([]);
+ * const [list, setList] = useAtom($list);
+ */
+export function useAtom<T>(value: ReturnType<typeof atom<T>>) {
+    const store = getDefaultStore();
+    return [
+        /**
+         * Get atom value
+         * @returns Atom value
+         * @example
+         * const $list = atom<string[]>([]);
+         * const [list] = useAtom($list);
+         * list() // []
+         */
+        function get() { store.get(value); },
+        /**
+         * Set atom value
+         * @param fn - New value or function to update previous value
+         * @example
+         * const $list = atom<string[]>([]);
+         * const [_, setList] = useAtom($list);
+         * setList((list) => [...list, "Item"]);
+         */
+        function set(fn: T | ((prev: T) => T)) { store.set(value, fn); },
+    ] as const;
 }
