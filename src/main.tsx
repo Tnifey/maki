@@ -1,22 +1,38 @@
 import { html } from 'lit-html';
 import { component } from './maki';
 
-component({
-    template: (props) => {
-        const { who, fuck, count } = props;
-        return html`
-            <h1>Hello, ${who}!</h1>
-            <button type="button" @click=${fuck}>
-                Increment ${count}
-            </button>
-        `;
-    },
-    setup: (ctx) => ({
-        who: 'WHO',
-        count: 0,
-        fuck: () => ctx.setState({
-            ...ctx.state,
-            count: ctx.state.count + 1,
-        }),
-    }),
+component(($) => {
+    const [count, setCount] = $.use(0);
+
+    function inc() {
+        setCount((c) => c + 1);
+    }
+
+    function dec() {
+        setCount((c) => c - 1);
+    }
+
+    return () => html`
+        <button type="button" @click=${dec}>Dec</button>
+        <button type="button" @click=${inc}>Inc</button>
+
+        <pre>${count()}</pre>
+        <maki-tatsu @inc=${inc} @dec=${dec} kai=${count()}></maki-tatsu>
+    `;
 }).register('maki-test');
+
+component<{ kai: string; }>(($) => {
+    return ({ kai }) => {
+        return html`
+            <button type="button" @click=${() => $.emit('dec')}>
+                - in child
+            </button>
+            <button type="button" @click=${() => $.emit('inc')}>
+                + in child
+            </button>
+
+            <pre>${kai}</pre>
+        `;
+    };
+})
+    .register('maki-tatsu');
