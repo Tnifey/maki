@@ -11,6 +11,7 @@ export default defineConfig({
     output: {
         path: path.resolve(__dirname, './dist'),
         filename: '[name].js',
+        clean: true,
     },
     optimization: {
         minimize: false,
