@@ -1,7 +1,7 @@
 import { html, render } from "lit-html";
 import { atom, createStore, getDefaultStore } from "jotai/vanilla";
 
-export { atom } from "jotai/vanilla";
+export * from "jotai/vanilla";
 
 export type StoreType = ReturnType<typeof createStore>;
 export type TemplateFn<Attrs> = (attrs: Attrs) => ReturnType<typeof html>;
@@ -9,12 +9,26 @@ export type TemplateFn<Attrs> = (attrs: Attrs) => ReturnType<typeof html>;
 export interface MakiComponent<Attrs> extends HTMLElement {
     template: TemplateFn<Attrs>;
     render: () => void;
-    use<T>(initialValue: T): readonly [
+    /**
+     * State hook
+     * @param initialValue - Initial value of the state, or an atom
+     */
+    use<T>(initialValue: ReturnType<typeof atom<T>> | T): readonly [
         () => T,
-        (fn: (prev: T) => T) => void,
+        (fn: T | ((prev: T) => T)) => void,
     ];
     emit(name: string, init?: CustomEventInit): boolean;
     [key: string]: any;
+}
+
+export function isAtom(value: any): value is ReturnType<typeof value> {
+    return typeof value?.read === 'function'
+        && typeof value?.write === 'function'
+        && typeof value?.toString === 'function';
+}
+
+export function toAtom(value: any) {
+    return isAtom(value) ? value : atom(value);
 }
 
 export function component<Attrs>(construct: ($: MakiComponent<Attrs>) => TemplateFn<Attrs>) {
@@ -27,33 +41,18 @@ export function component<Attrs>(construct: ($: MakiComponent<Attrs>) => Templat
             super();
             this.attachShadow({ mode: "open" });
             this.internals = this.attachInternals();
-            // @ts-ignore
             this.template = construct(this as any) as unknown as TemplateFn<Attrs>;
             this.observer = new MutationObserver(() => this.render());
         }
 
-        use<T>(initialValue: T) {
+        use<T>(initialValue: ReturnType<typeof atom<T>> | T) {
             const store = getDefaultStore();
-            const atomic = atom<T>(initialValue);
+            const atomic = toAtom(initialValue) as ReturnType<typeof atom<T>>;
             store.sub(atomic, () => this.render());
             return [
                 () => store.get(atomic),
-                (fn: any) => store.set(atomic, fn),
+                (fn: T) => store.set(atomic, fn),
             ] as const;
-        }
-
-        ume<T>(x: ReturnType<typeof atom<T>>) {
-            const store = getDefaultStore();
-            store.sub(x, () => this.render());
-            return [
-                () => store.get(x),
-                (fn: any) => store.set(x, fn),
-            ] as const;
-        }
-
-        watch(atom: any) {
-            const store = getDefaultStore();
-            store.sub(atom, () => this.render());
         }
 
         emit(name: string, init?: CustomEventInit) {
