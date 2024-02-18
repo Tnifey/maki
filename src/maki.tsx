@@ -27,7 +27,8 @@ export function component<Attrs>(construct: ($: MakiComponent<Attrs>) => Templat
             super();
             this.attachShadow({ mode: "open" });
             this.internals = this.attachInternals();
-            this.template = construct(this as unknown as MakiComponent<any>) as unknown as TemplateFn<Attrs>;
+            // @ts-ignore
+            this.template = construct(this as any) as unknown as TemplateFn<Attrs>;
             this.observer = new MutationObserver(() => this.render());
         }
 
@@ -38,6 +39,15 @@ export function component<Attrs>(construct: ($: MakiComponent<Attrs>) => Templat
             return [
                 () => store.get(atomic),
                 (fn: any) => store.set(atomic, fn),
+            ] as const;
+        }
+
+        ume<T>(x: ReturnType<typeof atom<T>>) {
+            const store = getDefaultStore();
+            store.sub(x, () => this.render());
+            return [
+                () => store.get(x),
+                (fn: any) => store.set(x, fn),
             ] as const;
         }
 

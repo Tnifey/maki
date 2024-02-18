@@ -1,8 +1,10 @@
 import { html } from 'lit-html';
-import { component } from './maki';
+import { atom, component } from './maki';
+
+const shared = atom(0);
 
 component(($) => {
-    const [count, setCount] = $.use(0);
+    const [count, setCount] = $.ume(shared);
 
     function inc() {
         setCount((c) => c + 1);
@@ -17,21 +19,21 @@ component(($) => {
         <button type="button" @click=${inc}>Inc</button>
 
         <pre>${count()}</pre>
-        <maki-tatsu @inc=${inc} @dec=${dec} kai=${count()}></maki-tatsu>
+        <maki-tatsu></maki-tatsu>
     `;
 }).register('maki-test');
 
 component<{ kai: string; }>(($) => {
-    return ({ kai }) => {
+    const [ume, setUme] = $.ume(shared);
+    return () => {
         return html`
-            <button type="button" @click=${() => $.emit('dec')}>
+            <button type="button" @click=${() => setUme((c) => c - 2)}>
                 - in child
             </button>
-            <button type="button" @click=${() => $.emit('inc')}>
+            <button type="button" @click=${() => setUme((c) => c + 2)}>
                 + in child
             </button>
-
-            <pre>${kai}</pre>
+            <pre>ume: ${ume()}</pre>
         `;
     };
 })
