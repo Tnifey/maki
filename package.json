@@ -4,18 +4,18 @@
   "main": "dist/main.js",
   "license": "MIT",
   "scripts": {
-    "dev": "rspack dev",
-    "build": "rspack build"
+    "dev": "rspack dev --node-env=development",
+    "build": "rspack build --node-env=production"
   },
   "dependencies": {
     "jotai": "^2.6.4",
-    "lit-html": "^3.1.2",
-    "typescript": "^5.3.3"
+    "lit-html": "^3.1.2"
   },
   "devDependencies": {
     "@rspack/cli": "^0.5.4",
     "@rspack/core": "^0.5.4",
     "@types/node": "^18",
-    "ts-node": "^10.9.2"
+    "ts-node": "^10.9.2",
+    "typescript": "^5.3.3"
   }
 }
