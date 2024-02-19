@@ -125,3 +125,11 @@ export function useAtom<T>(value: ReturnType<typeof atom<T>>) {
         function set(fn: T | ((prev: T) => T)) { store.set(value, fn); },
     ] as const;
 }
+
+export function getAtomValue<T>(value: ReturnType<typeof atom<T>>) {
+    return getDefaultStore().get(value);
+}
+
+export function setAtomValue<T>(value: ReturnType<typeof atom<T>>, fn: T | ((prev: T) => T)) {
+    return getDefaultStore().set(value, fn);
+}
