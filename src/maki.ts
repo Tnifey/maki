@@ -133,3 +133,8 @@ export function getAtomValue<T>(value: ReturnType<typeof atom<T>>) {
 export function setAtomValue<T>(value: ReturnType<typeof atom<T>>, fn: T | ((prev: T) => T)) {
     return getDefaultStore().set(value, fn);
 }
+
+export function persistentAtom<T>(key: string, initialValue: T) {
+    const stored = window.localStorage.getItem(key);
+    return atom<T>(stored ? JSON.parse(stored) as T : initialValue);
+}
