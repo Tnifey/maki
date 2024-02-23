@@ -1,5 +1,4 @@
-import { html } from 'lit-html';
-import { atom, component } from './maki';
+import { html, atom, component } from './maki';
 
 const shared = atom<any[]>([]);
 
