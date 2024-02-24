@@ -9,7 +9,10 @@
   },
   "dependencies": {
     "jotai": "^2.6.4",
-    "lit-html": "^3.1.2"
+    "lit-html": "^3.1.2",
+    "md-block": "^0.0.1",
+    "nanoid": "^5.0.6",
+    "twind": "^0.16.19"
   },
   "devDependencies": {
     "@rspack/cli": "^0.5.4",
