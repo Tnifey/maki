@@ -1,3 +1,4 @@
+// import '@intcreator/markdown-element';
 import { html, component, use, tw, setAtomValue, nothing, repeat, atom, getAtomValue, persistentAtom, ref } from './maki';
 import { nanoid } from 'nanoid';
 
@@ -191,7 +192,7 @@ component<{ role: string; }>(() => {
         </div>`;
 
         return html`
-            <div class=${tw("p-4 rounded-lg shadow max-w-prose bg-white", role === 'user' ? 'ml-auto bg-opacity-5' : 'bg-opacity-10')}>
+            <div class=${tw("host:inline-block p-4 rounded-lg shadow max-w-prose bg-white", role === 'user' ? 'ml-auto bg-opacity-5' : 'bg-opacity-10 mr-auto')} style="width: fit-content;">
                 <slot></slot>
             </div>
         `;
