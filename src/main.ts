@@ -43,10 +43,26 @@ component(() => {
 component<{}>(() => {
     const [isGenerating, setIsGenerating] = use(false);
     const [prompt, setPrompt] = use("");
+    const [promptImages, setPromptImages] = use<string[]>([]);
     const [content, setContent] = use<any>("");
 
     async function updatePrompt(e: MakiInputEvent<HTMLInputElement>) {
         return setPrompt(e.target.value);
+    }
+
+    function imagesChange(e: MakiInputEvent<HTMLInputElement>) {
+        setPromptImages([]);
+        if (!e.target.files) return console.log('no files');
+        const reader = new FileReader();
+        reader.addEventListener('load', (e) => {
+            const base = e.target?.result;
+            const file = base?.toString().split(',')[1];
+            setPromptImages((current) => [...current, file]);
+        });
+
+        for (let file of Array.from(e.target.files)) {
+            reader.readAsDataURL(file);
+        }
     }
 
     async function onSubmit(e: Event) {
@@ -66,9 +82,12 @@ component<{}>(() => {
                 model: getAtomValue($model),
                 messages: [
                     ...getAtomValue($responses).map(({ role, content }) => ({ role, content })),
-                    { role: 'user', content: prompt() },
+                    {
+                        role: 'user',
+                        content: prompt(),
+                        images: promptImages(),
+                    },
                 ],
-                prompt: setprompt(`${prompt()}`),
             }),
         });
         const reader = response.body?.getReader();
@@ -115,13 +134,17 @@ component<{}>(() => {
                     @click=${() => setAtomValue($responses, () => [])}>
                     Clear
                 </button>
+                <input type="file"
+                    multiple
+                    class=${tw("px-2 py-1 rounded w-18")}
+                    @change=${imagesChange} />
                 <slot></slot>
             </form>
         </div>
     `;
 }).as('app-chat');
 
-component<{}>(($) => {
+component<{}>(() => {
     const [responses] = use($responses);
     return () => html`
         <div class=${tw("flex flex-col gap-2 overflow-auto")}>
@@ -135,7 +158,7 @@ component<{}>(($) => {
     `;
 }).as('app-model-responses');
 
-component<{ role: string; }>(($) => {
+component<{ role: string; }>(() => {
     return ({ role }) => html`
         <div class=${tw("p-4 rounded-lg shadow max-w-prose bg-white", role === 'user' ? 'ml-auto bg-opacity-5' : 'bg-opacity-10')}>
             <slot></slot>
