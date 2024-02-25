@@ -1,6 +1,6 @@
-// import '@intcreator/markdown-element';
 import { html, component, use, tw, setAtomValue, nothing, repeat, atom, getAtomValue, persistentAtom, ref } from './maki';
 import { nanoid } from 'nanoid';
+import "zero-md";
 
 const $models = atom<any[]>([]);
 const $model = persistentAtom('model', 'mistral:latest');
@@ -146,7 +146,9 @@ component<{}>(() => {
     return () => html`
         <div class=${tw("grid")} style="grid-template-rows: 1fr auto; min-height: 100%;">
             <app-model-responses class=${tw('p-4')}>
-                ${content() ? html`<app-model-response role="assistant" ref=${ref(((x: HTMLElement) => (recent = x)))}>${content()}</app-model-response>` : nothing}
+                ${content() ? html`<app-model-response role="assistant" ref=${ref(((x: HTMLElement) => (recent = x)))}>
+                    <zero-markdown content=${content()}></zero-markdown>
+                </app-model-response>` : nothing}
             </app-model-responses>
 
             <form class=${tw("flex flex-row gap-4 p-4 items-stretch bottom-0 left-0 right-0 sticky z-10")} @submit=${onSubmit} style="background: #121212">
@@ -177,7 +179,7 @@ component<{}>(() => {
         <div class=${tw("flex flex-col gap-4 overflow-auto")}>
             ${repeat(responses(), x => x.uuid, (response) => html`
                 <app-model-response role=${response.role}>
-                    ${response.content}
+                    <zero-markdown content=${response.content}></zero-markdown>
                 </app-model-response>
             `)}
             <slot></slot>
@@ -198,6 +200,24 @@ component<{ role: string; }>(() => {
         `;
     };
 }).as('app-model-response');
+
+component<{ content: string; }>(() => {
+    return ({ content }) => html`
+        <zero-md>
+            <template>
+                <style>
+                    :host: { display: contents; max-width: 100%; }
+                    p { margin-top: 0; margin-bottom: 1em; }
+                    ul, ol { padding-left: 1em; }
+                    pre, code { white-space: pre-wrap; }
+                    :first-child { margin-top: 0; }
+                    :last-child { margin-bottom: 0; }
+                </style>
+            </template>
+            <script type="text/markdown">${content}</script>
+        </zero-md>
+    `;
+}).as('zero-markdown');
 
 interface MakiInputEvent<T> extends InputEvent {
     target: T & EventTarget;
