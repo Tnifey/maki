@@ -1,3 +1,4 @@
+export { html, nothing, noChange, svg } from "lit-html";
 export { asyncAppend } from "lit-html/directives/async-append.js";
 export { asyncReplace } from "lit-html/directives/async-replace.js";
 export { cache } from "lit-html/directives/cache.js";
