@@ -20,14 +20,10 @@ const $responses = persistentAtom<{
 component<{}>(() => {
     return () => html`
         <div class=${tw("grid w-full m-0 p-0")} style="min-height: 100dvh; grid-template-rows: auto 1fr;">
-            <div class=${tw('top-0 right-0 sticky z-10 inline-flex gap-4 p-4 flex justify-end')} style="background: #121212">
+            <div class=${tw('top-0 right-0 sticky z-10 inline-flex gap-4 p-4 flex justify-end border-b-1 border-b-black border-b-opacity-30')} style="background: #121212">
+                <div class=${tw("mr-auto my-auto font-bold")}>HubChat</div>
                 <app-select-role></app-select-role>
                 <app-select-model></app-select-model>
-                <button type="button"
-                class=${tw("px-2 py-1 rounded bg-red-500 text-white")}
-                @click=${() => setAtomValue($responses, () => [])}>
-                clear
-                </button>
             </div>
             <app-chat></app-chat>
         </div>
@@ -98,18 +94,20 @@ component<{}>(() => {
         setContent('');
         setIsGenerating(true);
 
+        const hasPrompt = prompt() && prompt().trim().length > 0;
+
         const chat = await fetch('http://localhost:11434/api/chat', {
             method: 'post',
             body: JSON.stringify({
                 model: getAtomValue($model),
                 messages: [
                     ...getAtomValue($responses).map(({ role, content }) => ({ role, content })),
-                    {
+                    hasPrompt && {
                         role: getAtomValue($role),
                         content: prompt(),
                         images: promptImages(),
                     },
-                ],
+                ].filter(Boolean),
             }),
         });
         const reader = chat.body?.getReader();
@@ -150,28 +148,39 @@ component<{}>(() => {
                     <zero-markdown content=${content()}></zero-markdown>
                 </app-model-response>` : nothing}
             </app-model-responses>
-            <form class=${tw("flex flex-row gap-2 p-4 items-stretch bottom-0 left-0 right-0 sticky z-10 items-end")} @submit=${onSubmit} style="background: #121212">
+            <form class=${tw("flex flex-row gap-3 p-4 items-stretch bottom-0 left-0 right-0 sticky z-10 items-end border-t-1 border-t-black border-t-opacity-30")} @submit=${onSubmit} style="background: #121212">
                 <iron-autogrow-textarea type="text"
-                    class=${tw("p-1 rounded w-full")}
+                    class=${tw("p-1 rounded w-full border-r-1 border-r-black border-r-opacity-30")}
                     @input=${updatePrompt}
                     @keyup=${keyup}
                     .value=${prompt()}
                     max-rows="5"
                     ref=${ref((x: HTMLInputElement) => (inputRef = x))}
                     placeholder="Message..."></iron-autogrow-textarea>
-                <label class=${tw("p-1 rounded text-white hover:bg-white hover:bg-opacity-5 cursor-pointer relative")} for="images">
+                <slot></slot>
+                <button type="button"
+                    title="clear"
+                    class=${tw("py-1 px-2 rounded text-white hover:bg-white hover:bg-opacity-5 disabled:opacity-10")}
+                    @click=${() => setAtomValue($responses, () => [])}>
+                    ✖
+                </button>
+                <!--
+                <label class=${tw("p-1 rounded text-white hover:bg-white hover:bg-opacity-5 cursor-pointer relative")}
+                    title="Add images"
+                    for="images">
                     <input type="file"
                         multiple
-                        class=${tw("p-1 rounded w-18 sr-only absolute top-0 left-0 right-0 bottom-0")}
+                        class=${tw("p-1 rounded w-18 absolute top-0 left-0 right-0 bottom-0 opacity-0")}
                         @change=${imagesChange} />
                     <span>📌</span>
                 </label>
+                -->
                 <button type="submit"
+                    title="Send"
                     class=${tw("py-1 px-2 rounded text-white hover:bg-white hover:bg-opacity-5 disabled:opacity-10")}
                     .disabled=${isGenerating()}>
                     <span>▶</span>
                 </button>
-                <slot></slot>
             </form>
         </div>
     `;
