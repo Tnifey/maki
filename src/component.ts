@@ -1,18 +1,17 @@
 import { html, render } from "lit-html";
-import { TW } from "twind";
 import { runtime } from "./runtime";
-import { createTailwindTw, sheet } from "./styles";
+import { TwindObserver, sheet, styleObserver } from "./styles";
 
 export type TemplateFn<Attrs> = (attrs: Attrs) => ReturnType<typeof html>;
 export type MakiFactory<T> = ($: MakiComponent<T>) => TemplateFn<T>;
 
 export interface MakiComponent<T> extends HTMLElement {
     internals: ElementInternals;
-    observer: MutationObserver;
+    mutationObserver: MutationObserver;
+    styleObserver: TwindObserver;
     template: TemplateFn<T>;
     render: () => ReturnType<typeof render>;
     attrs: T;
-    tw: TW;
     [key: string]: any;
 }
 
@@ -20,7 +19,8 @@ export function component<Attrs>(factory: MakiFactory<Attrs>) {
     return class MakiComponent<T = Attrs> extends HTMLElement implements MakiComponent<T> {
         internals: ElementInternals;
         template: TemplateFn<T>;
-        observer: MutationObserver;
+        mutationObserver: MutationObserver;
+        styleObserver: TwindObserver;
 
         constructor() {
             super();
@@ -32,7 +32,7 @@ export function component<Attrs>(factory: MakiFactory<Attrs>) {
             runtime.setCurrentContext(this as any);
             this.template = factory(this as any) as unknown as TemplateFn<T>;
             this.shadowRoot.adoptedStyleSheets = [sheet.target];
-            this.observer = new MutationObserver(() => this.render());
+            this.mutationObserver = new MutationObserver(() => this.render());
         }
 
         get attrs() {
@@ -47,12 +47,14 @@ export function component<Attrs>(factory: MakiFactory<Attrs>) {
         }
 
         connectedCallback() {
+            this.mutationObserver.observe(this, { attributes: true });
+            this.styleObserver = styleObserver.observe(this.shadowRoot);
             this.render();
-            this.observer.observe(this, { attributes: true });
         }
 
         disconnectedCallback() {
-            this.observer.disconnect();
+            this.mutationObserver.disconnect();
+            this.styleObserver.disconnect();
         }
 
         /**
