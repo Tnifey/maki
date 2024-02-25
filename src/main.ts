@@ -1,6 +1,7 @@
 import { html, component, use, tw, setAtomValue, nothing, repeat, atom, getAtomValue, persistentAtom, ref } from './maki';
 import { nanoid } from 'nanoid';
 import "zero-md";
+import '@polymer/iron-autogrow-textarea/iron-autogrow-textarea.js';
 
 const $models = atom<any[]>([]);
 const $model = persistentAtom('model', 'mistral:latest');
@@ -20,6 +21,7 @@ component<{}>(() => {
     return () => html`
         <div class=${tw("grid w-full m-0 p-0")} style="min-height: 100dvh; grid-template-rows: auto 1fr;">
             <div class=${tw('top-0 right-0 sticky z-10 inline-flex gap-4 p-4 flex justify-end')} style="background: #121212">
+                <app-select-role></app-select-role>
                 <app-select-model></app-select-model>
                 <button type="button"
                 class=${tw("px-2 py-1 rounded bg-red-500 text-white")}
@@ -27,9 +29,7 @@ component<{}>(() => {
                 clear
                 </button>
             </div>
-            <app-chat>
-                <app-select-role></app-select-role>
-            </app-chat>
+            <app-chat></app-chat>
         </div>
     `;
 }).as('app-root');
@@ -80,12 +80,7 @@ component<{}>(() => {
         setPromptImages([]);
         if (!e.target.files) return console.log('no files');
         const reader = new FileReader();
-        reader.addEventListener('load', (e) => {
-            const base = e.target?.result;
-            const file = base?.toString().split(',')[1];
-            setPromptImages((current) => [...current, file]);
-        });
-
+        reader.addEventListener('load', (e) => setPromptImages((current) => [...current, e.target?.result?.toString().split(',')[1]]));
         for (let file of Array.from(e.target.files)) {
             reader.readAsDataURL(file);
         }
@@ -99,6 +94,7 @@ component<{}>(() => {
             role: getAtomValue($role),
             content: prompt(),
         }]);
+        setPrompt('');
         setContent('');
         setIsGenerating(true);
 
@@ -143,6 +139,10 @@ component<{}>(() => {
         if (!chat.ok) throw new Error(chat.statusText);
     }
 
+    const keyup = (e: KeyboardEvent) => {
+        if (e.key === 'Enter' && e.ctrlKey) { return onSubmit(e); }
+    };
+
     return () => html`
         <div class=${tw("grid")} style="grid-template-rows: 1fr auto; min-height: 100%;">
             <app-model-responses class=${tw('p-4')}>
@@ -150,23 +150,27 @@ component<{}>(() => {
                     <zero-markdown content=${content()}></zero-markdown>
                 </app-model-response>` : nothing}
             </app-model-responses>
-
-            <form class=${tw("flex flex-row gap-4 p-4 items-stretch bottom-0 left-0 right-0 sticky z-10")} @submit=${onSubmit} style="background: #121212">
-                <input type="text"
-                    class=${tw("px-2 py-1 rounded w-full")}
+            <form class=${tw("flex flex-row gap-2 p-4 items-stretch bottom-0 left-0 right-0 sticky z-10 items-end")} @submit=${onSubmit} style="background: #121212">
+                <iron-autogrow-textarea type="text"
+                    class=${tw("p-1 rounded w-full")}
                     @input=${updatePrompt}
+                    @keyup=${keyup}
                     .value=${prompt()}
+                    max-rows="5"
                     ref=${ref((x: HTMLInputElement) => (inputRef = x))}
-                    placeholder="Message..." />
+                    placeholder="Message..."></iron-autogrow-textarea>
+                <label class=${tw("p-1 rounded text-white hover:bg-white hover:bg-opacity-5 cursor-pointer relative")} for="images">
+                    <input type="file"
+                        multiple
+                        class=${tw("p-1 rounded w-18 sr-only absolute top-0 left-0 right-0 bottom-0")}
+                        @change=${imagesChange} />
+                    <span>📌</span>
+                </label>
                 <button type="submit"
-                    class=${tw("px-2 py-1 rounded bg-blue-500 text-white disabled:opacity-10")}
+                    class=${tw("py-1 px-2 rounded text-white hover:bg-white hover:bg-opacity-5 disabled:opacity-10")}
                     .disabled=${isGenerating()}>
-                    Send
+                    <span>▶</span>
                 </button>
-                <input type="file"
-                    multiple
-                    class=${tw("px-2 py-1 rounded w-18")}
-                    @change=${imagesChange} />
                 <slot></slot>
             </form>
         </div>
@@ -206,10 +210,10 @@ component<{ content: string; }>(() => {
         <zero-md>
             <template>
                 <style>
-                    :host: { display: contents; max-width: 100%; }
+                    :host: { display: contents; max-width: 100%; background: transparent; }
                     p { margin-top: 0; margin-bottom: 1em; }
                     ul, ol { padding-left: 1em; }
-                    pre, code { white-space: pre-wrap; }
+                    pre, code { white-space: pre-wrap; padding: 0.5em; background: #212121; color: white; }
                     :first-child { margin-top: 0; }
                     :last-child { margin-bottom: 0; }
                 </style>
