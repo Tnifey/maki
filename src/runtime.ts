@@ -1,4 +1,4 @@
-import { type MakiComponent } from "./maki";
+import { type MakiComponent } from "./component";
 
 export const runtime = {
     currentContext: null as MakiComponent<any> | null,

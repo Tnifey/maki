@@ -1,21 +1,16 @@
 {
   "name": "maki",
   "version": "0.0.1",
-  "main": "src/maki.ts",
+  "main": "src/main.ts",
   "license": "MIT",
   "scripts": {
     "dev": "rspack dev --node-env=development",
     "build": "rspack build --node-env=production"
   },
   "dependencies": {
-    "@intcreator/markdown-element": "^0.3.3",
-    "@polymer/iron-autogrow-textarea": "^3.0.3",
     "jotai": "^2.6.4",
     "lit-html": "^3.1.2",
-    "md-block": "^0.0.1",
-    "nanoid": "^5.0.6",
-    "twind": "^0.16.19",
-    "zero-md": "^2.5.3"
+    "twind": "^0.16.19"
   },
   "devDependencies": {
     "@rspack/cli": "^0.5.4",
