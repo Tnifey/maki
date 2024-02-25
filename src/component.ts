@@ -1,7 +1,7 @@
 import { html, render } from "lit-html";
 import { TW } from "twind";
 import { runtime } from "./runtime";
-import { createTailwindTw } from "./styles";
+import { createTailwindTw, sheet } from "./styles";
 
 export type TemplateFn<Attrs> = (attrs: Attrs) => ReturnType<typeof html>;
 export type MakiFactory<T> = ($: MakiComponent<T>) => TemplateFn<T>;
@@ -17,12 +17,10 @@ export interface MakiComponent<T> extends HTMLElement {
 }
 
 export function component<Attrs>(factory: MakiFactory<Attrs>) {
-    const [tw, sheet] = createTailwindTw();
     return class MakiComponent<T = Attrs> extends HTMLElement implements MakiComponent<T> {
         internals: ElementInternals;
         template: TemplateFn<T>;
         observer: MutationObserver;
-        tw: TW = tw;
 
         constructor() {
             super();
@@ -33,7 +31,7 @@ export function component<Attrs>(factory: MakiFactory<Attrs>) {
             this.internals = this.attachInternals();
             runtime.setCurrentContext(this as any);
             this.template = factory(this as any) as unknown as TemplateFn<T>;
-            this.shadowRoot.adoptedStyleSheets = [sheet];
+            this.shadowRoot.adoptedStyleSheets = [sheet.target];
             this.observer = new MutationObserver(() => this.render());
         }
 
