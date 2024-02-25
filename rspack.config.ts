@@ -12,9 +12,13 @@ export default defineConfig({
         path: path.resolve(__dirname, './dist'),
         filename: '[name].js',
         clean: true,
+        module: true,
+        library: {
+            type: 'module',
+        },
     },
     optimization: {
-        minimize: false,
+        minimize: true,
         chunkIds: 'deterministic',
         mergeDuplicateChunks: true,
     },
@@ -26,6 +30,7 @@ export default defineConfig({
         ignored: /node_modules/,
         followSymlinks: true,
     },
+    target: 'es2022',
     module: {
         rules: [
             {
