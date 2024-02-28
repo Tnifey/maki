@@ -8,13 +8,13 @@
     "build": "rspack build --node-env=production"
   },
   "dependencies": {
-    "jotai": "^2.6.4",
+    "jotai": "^2.7.0",
     "lit-html": "^3.1.2",
     "twind": "^0.16.19"
   },
   "devDependencies": {
-    "@rspack/cli": "^0.5.4",
-    "@rspack/core": "^0.5.4",
+    "@rspack/cli": "^0.5.5",
+    "@rspack/core": "^0.5.5",
     "@types/node": "^18",
     "ts-node": "^10.9.2",
     "typescript": "^5.3.3"
