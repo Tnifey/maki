@@ -1,9 +1,9 @@
 import { atom } from "jotai/vanilla";
-import * as runtime from "./runtime";
 import { atomSubscribe, getAtomValue, setAtomValue, toAtom } from "./atoms";
+import * as runtime from "./runtime";
 
 export function use<T>(initialValue: T | ReturnType<typeof atom<T>>) {
-    const context = getCurrent('use()');
+    const context = getCurrent("use()");
     const atomic = toAtom(initialValue) as ReturnType<typeof atom<T>>;
     atomSubscribe(atomic, () => context.render());
     return [
@@ -20,14 +20,14 @@ export function getCurrent(who: string) {
 }
 
 export function useEmit() {
-    const context = getCurrent('useEmit()');
+    const context = getCurrent("useEmit()");
     return function emit(name: string, init?: CustomEventInit) {
         return context.dispatchEvent(new CustomEvent(name, init));
     };
 }
 
 export function useRender() {
-    const context = getCurrent('useRender()');
+    const context = getCurrent("useRender()");
     return function render() {
         return context.render();
     };

@@ -4,7 +4,7 @@ import { TwindObserver, sheet, styleObserver } from "./twind";
 
 export type TemplateFn<Attrs> = (attrs: Attrs) => ReturnType<typeof html>;
 export type MakiFactory<T> = ($: MakiComponent<T>) => TemplateFn<T>;
-
+export type AnyMakiComponent = MakiComponent<Record<string, unknown>>;
 export interface MakiComponent<T> extends HTMLElement {
     internals: ElementInternals;
     mutationObserver: MutationObserver;
@@ -12,11 +12,13 @@ export interface MakiComponent<T> extends HTMLElement {
     template: TemplateFn<T>;
     render: () => ReturnType<typeof render>;
     attrs: T;
-    [key: string]: any;
 }
 
 export function component<Attrs>(factory: MakiFactory<Attrs>) {
-    return class MakiComponent<T = Attrs> extends HTMLElement implements MakiComponent<T> {
+    return class MakiComponent<T = Attrs>
+        extends HTMLElement
+        implements MakiComponent<T>
+    {
         internals: ElementInternals;
         template: TemplateFn<T>;
         mutationObserver: MutationObserver;
@@ -29,17 +31,22 @@ export function component<Attrs>(factory: MakiFactory<Attrs>) {
                 slotAssignment: "named",
             });
             this.internals = this.attachInternals();
-            runtime.setCurrentContext(this as any);
-            this.template = factory(this as any) as unknown as TemplateFn<T>;
+            runtime.setCurrentContext(this as AnyMakiComponent);
+            this.template = factory(
+                this as unknown as MakiComponent<Attrs>,
+            ) as unknown as TemplateFn<T>;
             this.shadowRoot.adoptedStyleSheets = [sheet.target];
             this.mutationObserver = new MutationObserver(() => this.render());
         }
 
         get attrs() {
-            return Array.from(this.attributes).reduce((acc, attr) => {
-                acc[attr.name] = attr.value;
-                return acc;
-            }, {} as Record<string, any>) as T;
+            return Array.from(this.attributes).reduce(
+                (acc, attr) => {
+                    acc[attr.name] = attr.value;
+                    return acc;
+                },
+                {} as unknown as T,
+            ) as T;
         }
 
         render() {
@@ -62,8 +69,8 @@ export function component<Attrs>(factory: MakiFactory<Attrs>) {
          * @param tagname - Name of the web component
          */
         static as(tagname: string) {
-            window.customElements.define(tagname, this);
-            return this;
+            window.customElements.define(tagname, MakiComponent<Attrs>);
+            return MakiComponent<Attrs>;
         }
     };
 }

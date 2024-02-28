@@ -5,7 +5,8 @@
   "license": "MIT",
   "scripts": {
     "dev": "rspack dev --node-env=development",
-    "build": "rspack build --node-env=production"
+    "build": "rspack build --node-env=production",
+    "lint": "npx @biomejs/biome check --apply ./src"
   },
   "dependencies": {
     "jotai": "^2.7.0",
@@ -13,6 +14,7 @@
     "twind": "^0.16.19"
   },
   "devDependencies": {
+    "@biomejs/biome": "1.5.3",
     "@rspack/cli": "^0.5.5",
     "@rspack/core": "^0.5.5",
     "@types/node": "^18",

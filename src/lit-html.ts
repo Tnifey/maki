@@ -16,5 +16,5 @@ export { styleMap } from "lit-html/directives/style-map.js";
 export { unsafeHTML } from "lit-html/directives/unsafe-html.js";
 export { unsafeSVG } from "lit-html/directives/unsafe-svg.js";
 export { until } from "lit-html/directives/until.js";
-export { when } from 'lit-html/directives/when.js';
-export { literal } from 'lit-html/static.js';
+export { when } from "lit-html/directives/when.js";
+export { literal } from "lit-html/static.js";
