@@ -1,5 +1,5 @@
 import { html, render } from "lit-html";
-import { runtime } from "./runtime";
+import * as runtime from "./runtime";
 import { TwindObserver, sheet, styleObserver } from "./twind";
 
 export type TemplateFn<Attrs> = (attrs: Attrs) => ReturnType<typeof html>;

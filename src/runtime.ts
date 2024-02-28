@@ -1,12 +1,13 @@
 import { type MakiComponent } from "./component";
 
-export const runtime = {
-    currentContext: null as MakiComponent<any> | null,
-    contexts: new Map() as Map<string, MakiComponent<any>>,
-    setCurrentContext<T>(component: MakiComponent<T>) {
-        this.currentContext = component;
-    },
-    getCurrentContext(): MakiComponent<any> | null {
-        return this.currentContext;
-    }
-} as const;
+export const contexts = new Map() as Map<string, MakiComponent<any>>;
+
+export let currentContext = null as MakiComponent<any> | null;
+
+export function setCurrentContext<T>(component: MakiComponent<T>) {
+    currentContext = component;
+}
+
+export function getCurrentContext(): MakiComponent<any> | null {
+    return currentContext;
+}

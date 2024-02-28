@@ -1,5 +1,5 @@
 import { atom } from "jotai/vanilla";
-import { runtime } from "./runtime";
+import * as runtime from "./runtime";
 import { atomSubscribe, getAtomValue, setAtomValue, toAtom } from "./atoms";
 
 export function use<T>(initialValue: T | ReturnType<typeof atom<T>>) {
