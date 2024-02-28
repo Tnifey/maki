@@ -6,7 +6,8 @@
   "scripts": {
     "dev": "rspack dev --node-env=development",
     "build": "rspack build --node-env=production",
-    "lint": "npx @biomejs/biome check --apply ./src"
+    "lint": "lint-staged",
+    "prepare": "husky"
   },
   "dependencies": {
     "jotai": "^2.7.0",
@@ -18,7 +19,14 @@
     "@rspack/cli": "^0.5.5",
     "@rspack/core": "^0.5.5",
     "@types/node": "^18",
+    "husky": "^9.0.11",
+    "lint-staged": "^15.2.2",
     "ts-node": "^10.9.2",
     "typescript": "^5.3.3"
+  },
+  "lint-staged": {
+    "*.ts": [
+      "npx @biomejs/biome check --apply"
+    ]
   }
 }
