@@ -68,6 +68,12 @@ import { atom } from 'maki';
 const $state = atom(0);
 ```
 
+## Hooks "Hooks"
+Hooks
+
+throws an error if called outside of a component function
+just like react
+
 ### `useEmit` - use event emitter for current component
 ```ts
 import { useEmit } from 'maki';
