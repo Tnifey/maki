@@ -88,3 +88,19 @@ component(($) => {
     return () => html`<button onclick=${() => emit('event-name', 'event-data')}>Emit</button>`;
 }).as('ass');
 ```
+
+shortcut for 
+
+```ts
+component(($) => {
+    function emit(name: string, init?: CustomEventInit) {
+        return $.dispatchEvent(new CustomEvent(name, init));
+    }
+
+    emit('event-name', 'event-data');
+
+    // in template return a button that emits an event on click
+    return () => html`<button onclick=${() => emit('event-name', 'event-data')}>Emit</button>`;
+}).as('ass');
+```
+
