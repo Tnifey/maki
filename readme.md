@@ -1,10 +1,10 @@
 ## Write it yourself
 
-A simple state management library for web components.
-With twind, jotai and lit-html under the hood.
+A simple FRAMEWORK library for creating web components with hooks.
+With twind for styles, jotai for state and lit-html for rendering under the hood.
 
 If you want to use it, you should probably write it yourself. It's not that hard.
-It is like 10 lines of code gzipped.
+It is like 10 lines of code gzipped. Or fork it and do not create pr or issues.
 
 ## Example
 
