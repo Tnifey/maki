@@ -1,6 +1,6 @@
 ## Write it yourself
 
-A simple FRAMEWORK library for creating web components with hooks.
+A simple JAVASCRIPT FRAMEWORK library written in TYPESCRIPT for creating web components with hooks.
 With twind for styles, jotai for state and lit-html for rendering under the hood.
 
 If you want to use it, you should probably write it yourself. It's not that hard.
