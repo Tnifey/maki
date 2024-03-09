@@ -32,10 +32,8 @@ export function component<Attrs>(factory: MakiFactory<Attrs>) {
                 slotAssignment: "named",
             });
             this.internals = this.attachInternals();
-            runtime.setCurrentContext(this as AnyMakiComponent);
-            this.template = factory(
-                this as unknown as MakiComponent<Attrs>,
-            ) as unknown as TemplateFn<T>;
+            runtime.setCurrentContext(this as unknown as MakiComponent<Attrs>);
+            this.template = factory(this as unknown as MakiComponent<Attrs>) as unknown as TemplateFn<T>;
             this.shadowRoot.adoptedStyleSheets = [sheet.target];
             this.mutationObserver = new MutationObserver(() => this.render());
         }
