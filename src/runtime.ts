@@ -1,4 +1,4 @@
-import { type AnyMakiComponent, type MakiComponent } from "./component";
+import type { AnyMakiComponent, MakiComponent } from "./component";
 
 export const contexts = new Map() as Map<string, AnyMakiComponent>;
 

@@ -1,8 +1,9 @@
-import { html, render } from "lit-html";
+import { render } from "lit-html";
 import * as runtime from "./runtime";
-import { TwindObserver, sheet, styleObserver } from "./twind";
+import { type TwindObserver, sheet, styleObserver } from "./twind";
+import type { Renderable } from "./lit-html";
 
-export type TemplateFn<Attrs> = (attrs: Attrs) => ReturnType<typeof html>;
+export type TemplateFn<Attrs> = (attrs: Attrs) => Renderable;
 export type MakiFactory<T> = ($: MakiComponent<T>) => TemplateFn<T>;
 export type AnyMakiComponent = MakiComponent<Record<string, unknown>>;
 export interface MakiComponent<T> extends HTMLElement {

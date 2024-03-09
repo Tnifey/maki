@@ -1,3 +1,15 @@
+import type { html, noChange, nothing, svg } from "lit-html";
+
+export type RenderableValue =
+    | string
+    | number
+    | boolean
+    | ReturnType<typeof html>
+    | ReturnType<typeof svg>
+    | typeof nothing
+    | typeof noChange;
+export type Renderable = RenderableValue | RenderableValue[];
+
 export { html, nothing, noChange, svg } from "lit-html";
 export { asyncAppend } from "lit-html/directives/async-append.js";
 export { asyncReplace } from "lit-html/directives/async-replace.js";
@@ -18,3 +30,4 @@ export { unsafeSVG } from "lit-html/directives/unsafe-svg.js";
 export { until } from "lit-html/directives/until.js";
 export { when } from "lit-html/directives/when.js";
 export { literal } from "lit-html/static.js";
+

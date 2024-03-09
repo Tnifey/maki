@@ -1,12 +1,12 @@
 import { defineConfig } from '@rspack/cli';
-import path from 'path';
+import path from 'node:path';
 
 export default defineConfig({
     mode: 'development',
     devtool: 'source-map',
     context: path.resolve(__dirname, 'src'),
     entry: {
-        'main': './main.ts',
+        example: './example.ts',
     },
     output: {
         path: path.resolve(__dirname, './dist'),
@@ -19,8 +19,6 @@ export default defineConfig({
     },
     optimization: {
         minimize: true,
-        chunkIds: 'deterministic',
-        mergeDuplicateChunks: true,
     },
     resolve: {
         extensions: ['.ts', '.js', '.tsx', '.jsx'],
