@@ -46,8 +46,8 @@ export function component<Attrs>(factory: MakiFactory<Attrs>) {
                     acc[attr.name] = attr.value;
                     return acc;
                 },
-                {} as unknown as T,
-            ) as T;
+                {} as T,
+            );
         }
 
         render() {
