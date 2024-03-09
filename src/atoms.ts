@@ -2,14 +2,16 @@ import { atom, getDefaultStore } from "jotai/vanilla";
 
 export { atom, getDefaultStore } from "jotai/vanilla";
 
+export type Atom<T> = ReturnType<typeof atom<T>>;
+
 /**
  * Naive type check for atom
  * Checks if value has read, write, and toString methods
  */
 export function isAtom<T = unknown>(
-    value: unknown | ReturnType<typeof atom<T>>,
-): value is ReturnType<typeof atom<T>> {
-    const v = value as ReturnType<typeof atom<T>>;
+    value: unknown | Atom<T>,
+): value is Atom<T> {
+    const v = value as Atom<T>;
     return (
         typeof v?.read === "function" &&
         typeof v?.write === "function" &&
@@ -18,24 +20,24 @@ export function isAtom<T = unknown>(
 }
 
 export function toAtom<T>(
-    value: T | ReturnType<typeof atom<T>>,
-): ReturnType<typeof atom<T>> {
-    return (isAtom(value) ? value : atom(value)) as ReturnType<typeof atom<T>>;
+    value: T | Atom<T>,
+): Atom<T> {
+    return (isAtom(value) ? value : atom(value)) as Atom<T>;
 }
 
-export function getAtomValue<T>(value: ReturnType<typeof atom<T>>) {
+export function getAtomValue<T>(value: Atom<T>) {
     return getDefaultStore().get(value);
 }
 
 export function setAtomValue<T>(
-    value: ReturnType<typeof atom<T>>,
+    value: Atom<T>,
     fn: T | ((prev: T) => T),
 ) {
     return getDefaultStore().set(value, fn);
 }
 
 export function atomSubscribe<T>(
-    value: ReturnType<typeof atom<T>>,
+    value: Atom<T>,
     fn: (value: T) => void,
 ) {
     return getDefaultStore().sub(value, () => fn(getAtomValue(value)));
@@ -60,7 +62,7 @@ export function persistentAtom<T>(key: string, initialValue: T) {
  * const $list = atom<string[]>([]);
  * const [list, setList] = useAtom($list);
  */
-export function useAtom<T>(value: ReturnType<typeof atom<T>>) {
+export function useAtom<T>(value: Atom<T>) {
     const store = getDefaultStore();
     return [
         /**

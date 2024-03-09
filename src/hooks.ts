@@ -1,16 +1,31 @@
-import { atom } from "jotai/vanilla";
-import { atomSubscribe, getAtomValue, setAtomValue, toAtom } from "./atoms";
+import { type Atom, atomSubscribe, getAtomValue, setAtomValue, toAtom } from "./atoms";
 import * as runtime from "./runtime";
 
-export function use<T>(initialValue: T | ReturnType<typeof atom<T>>) {
+export function use<T>(initialValue: T | Atom<T>) {
     const context = getCurrent("use()");
-    const atomic = toAtom(initialValue) as ReturnType<typeof atom<T>>;
+    const atomic = toAtom(initialValue) as Atom<T>;
     atomSubscribe(atomic, () => context.render());
     return [
         () => getAtomValue(atomic),
         (fn: T | ((prev: T) => T)) => setAtomValue(atomic, fn),
         atomic,
     ] as const;
+}
+
+export function tome<T>(initialValue: T | Atom<T>) {
+    const context = getCurrent("tome()");
+    const atomic = toAtom(initialValue);
+    atomSubscribe(atomic, () => context.render());
+
+    function get() {
+        return getAtomValue(atomic);
+    }
+
+    function set(fn: T | ((prev: T) => T)) {
+        return setAtomValue(atomic, fn);
+    }
+
+    return Object.assign(get, atomic, { set });
 }
 
 export function getCurrent(who: string) {
