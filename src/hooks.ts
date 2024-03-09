@@ -1,31 +1,29 @@
 import { type Atom, atomSubscribe, getAtomValue, setAtomValue, toAtom } from "./atoms";
 import * as runtime from "./runtime";
 
+export type Use<T> = ReturnType<typeof use<T>>;
 export function use<T>(initialValue: T | Atom<T>) {
-    const context = getCurrent("use()");
-    const atomic = toAtom(initialValue) as Atom<T>;
-    atomSubscribe(atomic, () => context.render());
-    return [
-        () => getAtomValue(atomic),
-        (fn: T | ((prev: T) => T)) => setAtomValue(atomic, fn),
-        atomic,
-    ] as const;
-}
-
-export function tome<T>(initialValue: T | Atom<T>) {
     const context = getCurrent("tome()");
     const atomic = toAtom(initialValue);
-    atomSubscribe(atomic, () => context.render());
+    const unsub = atomSubscribe(atomic, () => context.render());
+    const getter = () => getAtomValue(atomic);
+    const setter = (fn: T | ((x: T) => T)) => setAtomValue(atomic, fn);
 
-    function get() {
-        return getAtomValue(atomic);
+    /**
+     * Get atom value
+     * @returns Atom value
+     */
+    function getset(): T;
+    /**
+     * Set atom value
+     */
+    function getset(fn: T | ((x: T) => T)): void;
+    function getset(...args: [T | ((x: T) => T)] | []) {
+        if (args.length) return setter(args[0]);
+        return getter();
     }
 
-    function set(fn: T | ((prev: T) => T)) {
-        return setAtomValue(atomic, fn);
-    }
-
-    return Object.assign(get, atomic, { set });
+    return Object.assign(getset, atomic, { unsub }, [getter, setter, atomic] as const);
 }
 
 export function getCurrent(who: string) {
