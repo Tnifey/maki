@@ -4,6 +4,9 @@ export type RenderableValue =
     | string
     | number
     | boolean
+    | null
+    | undefined
+    | Node
     | ReturnType<typeof html>
     | ReturnType<typeof svg>
     | typeof nothing

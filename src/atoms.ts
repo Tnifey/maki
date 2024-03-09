@@ -6,13 +6,14 @@ export { atom, getDefaultStore } from "jotai/vanilla";
  * Naive type check for atom
  * Checks if value has read, write, and toString methods
  */
-export function isAtom(
-    value: unknown,
-): value is ReturnType<typeof atom<unknown>> {
+export function isAtom<T = unknown>(
+    value: unknown | ReturnType<typeof atom<T>>,
+): value is ReturnType<typeof atom<T>> {
+    const v = value as ReturnType<typeof atom<T>>;
     return (
-        typeof value?.read === "function" &&
-        typeof value?.write === "function" &&
-        typeof value?.toString === "function"
+        typeof v?.read === "function" &&
+        typeof v?.write === "function" &&
+        typeof v?.toString === "function"
     );
 }
 
