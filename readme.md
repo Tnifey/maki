@@ -9,7 +9,7 @@ It is like 10 lines of code gzipped. Or fork it and do not create PRs or issues.
 
 ## Example
 
-```ts
+```tsx
 import { html, component, use, atom } from 'maki';
 
 // global state variable
@@ -24,27 +24,28 @@ component(
     // global state variable
     const [someGlobal, setSomeGlobal] = use($global);
 
-    function increment(event) {
+    function incrementCount(event) {
         setCount(count() + 1)
+    }
+
+    function incrementGlobal(event) {
+        setSomeGlobal((count) => count + 1)
     }
 
     // this called when the component is rendered
     return ($argsObject /* this.args */) => html`
-        <h1>${count}</h1>
-        <button onclick=${increment}>Increment</button>
-        <pre>count:  ${
-            JSON.stringify(count(), null, 2)
-        }</pre>
-        <pre>global: ${
-            JSON.stringify(someGlobal(), null, 2)
-        }</pre>
+        <h1>${count()}</h1>
+        <button @click=${incrementCount}>Increment count</button>
+        <button @click=${incrementGlobal}>Increment global</button>
+        <pre>count:  ${count()}</pre>
+        <pre>global: ${someGlobal()}</pre>
     `;
 }).as('do-not-use-this-component');
 ```
 
-## Usage
-
 ```html
+<script src="path/to/js.js" async></script>
+
 <do-not-use-this-component></do-not-use-this-component>
 ```
 
