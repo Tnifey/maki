@@ -69,8 +69,8 @@ export function component<Attrs>(factory: MakiFactory<Attrs>) {
          * Register as web component
          * @param tagname - Name of the web component
          */
-        static as(tagname: string) {
-            window.customElements.define(tagname, MakiComponent<Attrs>);
+        static as(tagname: string, options?: ElementDefinitionOptions) {
+            window.customElements.define(tagname, MakiComponent<Attrs>, options);
             return MakiComponent<Attrs>;
         }
     };
