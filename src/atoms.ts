@@ -72,7 +72,7 @@ export function useAtom<T>(value: ReturnType<typeof atom<T>>) {
          * list() // []
          */
         function get() {
-            store.get(value);
+            return store.get(value);
         },
         /**
          * Set atom value
@@ -83,7 +83,7 @@ export function useAtom<T>(value: ReturnType<typeof atom<T>>) {
          * setList((list) => [...list, "Item"]);
          */
         function set(fn: T | ((prev: T) => T)) {
-            store.set(value, fn);
+            return store.set(value, fn);
         },
         /**
          * Subscribe to atom changes
