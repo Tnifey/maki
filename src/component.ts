@@ -7,13 +7,13 @@ export type TemplateFn<Attrs> = (attrs: Attrs) => Renderable;
 export type MakiFactory<T> = ($: MakiComponent<T>) => TemplateFn<T>;
 export type AnyMakiComponent = MakiComponent<Record<string, unknown>>;
 export interface MakiComponent<T> extends HTMLElement {
+    template: TemplateFn<T>;
+    render: () => ReturnType<typeof render>;
+    attrs: T;
     internals: ElementInternals;
     mutationObserver: MutationObserver;
     styleObserver: TwindObserver;
-    template: TemplateFn<T>;
     cachedAttrs: T | null;
-    render: () => ReturnType<typeof render>;
-    attrs: T;
 }
 
 export function component<Attrs>(factory: MakiFactory<Attrs>) {
