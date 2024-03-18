@@ -3,7 +3,7 @@ import * as runtime from "./runtime";
 
 export type Use<T> = ReturnType<typeof use<T>>;
 export function use<T>(initialValue: T | Atom<T>) {
-    const context = getCurrent("tome()");
+    const context = getCurrent("use()");
     const atomic = toAtom(initialValue);
     const unsub = atomSubscribe(atomic, () => context.render());
     const getter = () => getAtomValue(atomic);
@@ -30,18 +30,4 @@ export function getCurrent(who: string) {
     const current = runtime.getCurrentContext();
     if (!current) throw new Error(`Cannot call ${who} outside of a component`);
     return current;
-}
-
-export function useEmit() {
-    const context = getCurrent("useEmit()");
-    return function emit(name: string, init?: CustomEventInit) {
-        return context.dispatchEvent(new CustomEvent(name, init));
-    };
-}
-
-export function useRender() {
-    const context = getCurrent("useRender()");
-    return function render() {
-        return context.render();
-    };
 }

@@ -5,7 +5,9 @@
     "license": "MIT",
     "scripts": {
         "dev": "rspack dev --node-env=development",
+        "dev:prod": "rspack dev --node-env=production",
         "build": "rspack build --node-env=production",
+        "build:dev": "rspack build --node-env=development",
         "lint": "lint-staged",
         "prepare": "husky"
     },

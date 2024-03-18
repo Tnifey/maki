@@ -17,6 +17,7 @@ export default defineConfig({
     resolve: {
         extensions: ['.ts', '.js', '.tsx', '.jsx'],
         tsConfigPath: path.resolve(__dirname, 'tsconfig.json'),
+        exportsFields: process.env.NODE_ENV === 'production' ? ['default'] : undefined,
     },
     watchOptions: {
         ignored: /node_modules/,
@@ -43,7 +44,7 @@ export default defineConfig({
                                 jsc: {
                                     parser: {
                                         syntax: 'typescript',
-                                        jsx: 'react-jsx',
+                                        target: 'esnext',
                                     },
                                 },
                             },
