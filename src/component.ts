@@ -11,6 +11,7 @@ export interface MakiComponent<T> extends HTMLElement {
     mutationObserver: MutationObserver;
     styleObserver: TwindObserver;
     template: TemplateFn<T>;
+    cachedAttrs: T | null;
     render: () => ReturnType<typeof render>;
     attrs: T;
 }
@@ -24,6 +25,7 @@ export function component<Attrs>(factory: MakiFactory<Attrs>) {
         template: TemplateFn<T>;
         mutationObserver: MutationObserver;
         styleObserver: TwindObserver;
+        cachedAttrs: T = null;
 
         constructor() {
             super();
@@ -38,17 +40,20 @@ export function component<Attrs>(factory: MakiFactory<Attrs>) {
             this.mutationObserver = new MutationObserver(() => this.render());
         }
 
-        get attrs() {
-            return Array.from(this.attributes).reduce(
+        get attrs(): T {
+            if (this.cachedAttrs) return this.cachedAttrs;
+            this.cachedAttrs = Array.from(this.attributes).reduce(
                 (acc, attr) => {
                     acc[attr.name] = attr.value;
                     return acc;
                 },
                 {} as T,
             );
+            return this.cachedAttrs;
         }
 
         render() {
+            this.cachedAttrs = null;
             return render(this.template(this.attrs), this.shadowRoot);
         }
 
@@ -63,11 +68,15 @@ export function component<Attrs>(factory: MakiFactory<Attrs>) {
             this.styleObserver.disconnect();
         }
 
+        adoptedCallback() {
+            this.render();
+        }
+
         /**
-         * Register as web component
-         * @param tagname - Name of the web component
+         * Register as web component, you can register the class only once
+         * @param tagname - Tagname of the web component
          */
-        static as(tagname: string, options?: ElementDefinitionOptions) {
+        static as<Tagname extends string>(tagname: Tagname, options?: ElementDefinitionOptions) {
             window.customElements.define(tagname, MakiComponent<Attrs>, options);
             return MakiComponent<Attrs>;
         }

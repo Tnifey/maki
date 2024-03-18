@@ -1,6 +1,6 @@
 import { component, html } from "./main";
 
-component(() => {
+const AppRoot = component(() => {
     return () => html`
         Hello, World!
     `;
