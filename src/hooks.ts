@@ -1,9 +1,10 @@
 import { type Atom, atomSubscribe, getAtomValue, setAtomValue, toAtom } from "./atoms";
-import * as runtime from "./runtime";
+import { getCurrentContext } from "./runtime";
 
 export type Use<T> = ReturnType<typeof use<T>>;
 export function use<T>(initialValue: T | Atom<T>) {
-    const context = getCurrent("use()");
+    const context = getCurrentContext();
+    if (!context) throw new Error("Cannot call use() outside of a component");
     const atomic = toAtom(initialValue);
     const unsub = atomSubscribe(atomic, () => context.render());
     const getter = () => getAtomValue(atomic);
@@ -24,10 +25,4 @@ export function use<T>(initialValue: T | Atom<T>) {
     }
 
     return Object.assign(getset, atomic, { unsub }, [getter, setter, atomic] as const);
-}
-
-export function getCurrent(who: string) {
-    const current = runtime.getCurrentContext();
-    if (!current) throw new Error(`Cannot call ${who} outside of a component`);
-    return current;
 }

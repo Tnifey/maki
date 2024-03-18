@@ -1,5 +1,5 @@
 import { render } from "lit-html";
-import * as runtime from "./runtime";
+import { setCurrentContext } from "./runtime";
 import { type TwindObserver, sheet, styleObserver } from "./twind";
 import type { Renderable } from "./lit-html";
 
@@ -34,7 +34,7 @@ export function component<Attrs>(factory: MakiFactory<Attrs>) {
                 slotAssignment: "named",
             });
             this.internals = this.attachInternals();
-            runtime.setCurrentContext(this as unknown as MakiComponent<Attrs>);
+            setCurrentContext(this as unknown as MakiComponent<Attrs>);
             this.template = factory(this as unknown as MakiComponent<Attrs>) as unknown as TemplateFn<T>;
             this.shadowRoot.adoptedStyleSheets = [sheet.target];
             this.mutationObserver = new MutationObserver(() => this.render());
