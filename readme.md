@@ -76,22 +76,7 @@ Hooks
 throws an error if called outside of a component function
 just like react
 
-### `useEmit` - use event emitter for current component
-```ts
-import { useEmit } from 'maki';
-
-component(($) => {
-    // create that emmiter
-    const emit = useEmit();
-    // emit event on init
-    emit('event-name', 'event-data');
-
-    // in template return a button that emits an event on click
-    return () => html`<button onclick=${() => emit('event-name', 'event-data')}>Emit</button>`;
-}).as('ass');
-```
-
-shortcut for 
+### event emitter for current component
 
 ```ts
 component(($) => {
