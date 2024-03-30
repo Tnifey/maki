@@ -1,4 +1,5 @@
 import { atom, getDefaultStore } from "jotai/vanilla";
+import { isUseResult } from './hooks';
 
 export { atom, getDefaultStore } from "jotai/vanilla";
 
@@ -22,7 +23,10 @@ export function isAtom<T = unknown>(
 export function toAtom<T>(
     value: T | Atom<T>,
 ): Atom<T> {
-    return (isAtom(value) ? value : atom(value)) as Atom<T>;
+    if (isAtom(value)) {
+        return isUseResult(value) ? value.atom as Atom<T> : value;
+    }
+    return atom<T>(value);
 }
 
 export function getAtomValue<T>(value: Atom<T>) {

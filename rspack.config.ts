@@ -57,7 +57,6 @@ export default defineConfig({
     devServer: {
         port: 3030,
         hot: true,
-        https: true,
         historyApiFallback: true,
     },
 });

@@ -47,7 +47,7 @@ export function use<T>(
     return Object.assign(getset, atomic, { unsub, [USE]: true, atom: atomic }, [getter, setter, atomic] as const);
 }
 
-export function isUse(value: unknown): value is Use<unknown> {
+export function isUseResult(value: unknown): value is Use<unknown> {
     return typeof value === "function" && value[USE] === true;
 }
 

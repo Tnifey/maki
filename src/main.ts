@@ -3,3 +3,4 @@ export * from "./hooks";
 export * from "./lit-html";
 export * from "./component";
 export * from "./twind";
+export * from "./watch";

@@ -7,6 +7,15 @@ If you want to use it, you should probably write it yourself. It's not that hard
 It is like 10 lines of code gzipped. Or fork it and do not create PRs or issues.
 > It works for me.
 
+## Usage
+```json
+{
+    "dependencies": {
+        "maki": "git+https://github.com/tnifey/maki.git"
+    }
+}
+```
+
 ## Example
 
 ```tsx
