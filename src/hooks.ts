@@ -5,6 +5,8 @@ export type Use<T> = ReturnType<typeof use<T>>;
 
 export type Guard<T> = (value: T, prev: T) => T;
 
+export const USE: unique symbol = Symbol("use");
+
 export function use<T>(
     initialValue: T | Atom<T>,
     /**
@@ -42,7 +44,11 @@ export function use<T>(
         return getter();
     }
 
-    return Object.assign(getset, atomic, { unsub }, [getter, setter, atomic] as const);
+    return Object.assign(getset, atomic, { unsub, [USE]: true, atom: atomic }, [getter, setter, atomic] as const);
+}
+
+export function isUse(value: unknown): value is Use<unknown> {
+    return typeof value === "function" && value[USE] === true;
 }
 
 // biome-ignore lint/suspicious/noExplicitAny: <explanation>
