@@ -3,20 +3,29 @@ import { getCurrentContext } from "./runtime";
 
 export type Use<T> = ReturnType<typeof use<T>>;
 
-export type Guard<T> = (x: T) => T;
+export type Guard<T> = (value: T, prev: T) => T;
 
-export function use<T>(initialValue: T | Atom<T>, guard: Guard<T> = x => x) {
-    if (typeof guard !== "function") throw new Error("Guard must be a function");
-
+export function use<T>(
+    initialValue: T | Atom<T>,
+    /**
+     * Guard function. It is called every time the value is set. If the guard function returns a different value, the value is updated.
+     * @param value Current value
+     * @param prev Previous value
+     * @returns New value
+     */
+    guard?: Guard<T>,
+) {
     const context = getCurrentContext();
     if (!context) throw new Error("Cannot call use() outside of a component");
 
     const atomic = toAtom(initialValue);
     const unsub = atomSubscribe(atomic, () => context.render());
     const getter = () => getAtomValue(atomic);
-    const setter = (fn: T | ((x: T) => T)) => {
-        const value = guard(isFunction(fn) ? fn(getAtomValue(atomic)) : fn);
-        return setAtomValue(atomic, value);
+    const setter = typeof guard === "function" ? (set: T | ((x: T) => T)) => {
+        const value = getAtomValue(atomic);
+        return setAtomValue(atomic, guard(isFunction(set) ? set(value) : set, value));
+    } : (set: T | ((x: T) => T)) => {
+        return setAtomValue(atomic, isFunction(set) ? set(getAtomValue(atomic)) : set);
     };
 
     /**

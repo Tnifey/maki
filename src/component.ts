@@ -29,15 +29,16 @@ export function component<Attrs>(factory: MakiFactory<Attrs>) {
 
         constructor() {
             super();
+            setCurrentContext(this as unknown as MakiComponent<Attrs>);
             this.attachShadow({
                 mode: "open",
                 slotAssignment: "named",
             });
             this.internals = this.attachInternals();
-            setCurrentContext(this as unknown as MakiComponent<Attrs>);
             this.template = factory(this as unknown as MakiComponent<Attrs>) as unknown as TemplateFn<T>;
             this.shadowRoot.adoptedStyleSheets = [sheet.target];
             this.mutationObserver = new MutationObserver(() => this.render());
+            setCurrentContext(null);
         }
 
         get attrs(): T {
