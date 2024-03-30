@@ -10,6 +10,7 @@ export function use<T>(initialValue: T | Atom<T>, guard: Guard<T> = x => x) {
 
     const context = getCurrentContext();
     if (!context) throw new Error("Cannot call use() outside of a component");
+
     const atomic = toAtom(initialValue);
     const unsub = atomSubscribe(atomic, () => context.render());
     const getter = () => getAtomValue(atomic);
