@@ -3,8 +3,28 @@ import { atom, getDefaultStore } from "jotai/vanilla";
 export { atom, getDefaultStore } from "jotai/vanilla";
 
 export type Atom<T> = ReturnType<typeof atom<T>>;
+
 export type Guard<T> = (value: T, prev: T) => T;
+
 export type Isotope<T> = ReturnType<typeof isotope<T>>;
+
+export function getAtomValue<T>(value: Atom<T>) {
+    return getDefaultStore().get(value);
+}
+
+export function setAtomValue<T>(
+    value: Atom<T>,
+    fn: T | ((prev: T) => T),
+) {
+    return getDefaultStore().set(value, fn);
+}
+
+export function atomSubscribe<T>(
+    value: Atom<T>,
+    fn: (value: T) => void,
+) {
+    return getDefaultStore().sub(value, () => fn(getAtomValue(value)));
+}
 
 /**
  * Naive type check for atom
@@ -32,29 +52,11 @@ export function toAtom<T>(
     return atom<T>(value);
 }
 
-export function getAtomValue<T>(value: Atom<T>) {
-    return getDefaultStore().get(value);
-}
-
-export function setAtomValue<T>(
-    value: Atom<T>,
-    fn: T | ((prev: T) => T),
-) {
-    return getDefaultStore().set(value, fn);
-}
-
-export function atomSubscribe<T>(
-    value: Atom<T>,
-    fn: (value: T) => void,
-) {
-    return getDefaultStore().sub(value, () => fn(getAtomValue(value)));
-}
-
 /**
- * Atom with persistent storage in localStorage
+ * Atom with persistent storage in localStorage. It will be JSON serialized.
  * @param key - Storage key
- * @param defaultValue - Initial value. It will be JSON parsed from localStorage if available.
- * @returns Atom
+ * @param defaultValue - Initial value.
+ * @returns Atom with persistent storage
  */
 export function persistentAtom<T>(key: string, defaultValue: T) {
     const stored = window.localStorage.getItem(key);
