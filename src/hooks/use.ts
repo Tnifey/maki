@@ -1,5 +1,5 @@
-import { type Atom, type Guard, isotope } from "./atoms";
-import { getCurrentContext } from "./runtime";
+import { type Atom, type Guard, isotope } from "../state";
+import { getCurrentContext } from "../runtime";
 
 export type Use<T> = ReturnType<typeof use<T>>;
 

@@ -1,4 +1,4 @@
-import { type Atom, type Isotope, isAtom, atomSubscribe, isIsotope } from "./atoms";
+import { type Atom, type Isotope, isAtom, atomSubscribe, isIsotope } from "../state";
 
 /**
  * Watch atom changes. Calls the callback function whenever any of the dependencies change.

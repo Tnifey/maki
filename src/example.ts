@@ -1,5 +1,5 @@
 import { component, getAtomValue, html, isotope, use } from "./main";
-import { watch } from "./watch";
+import { watch } from "./hooks/watch";
 
 component(() => {
     return () => html`
