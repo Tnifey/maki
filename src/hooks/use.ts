@@ -1,8 +1,6 @@
 import { type Atom, type Guard, isotope } from "../state";
 import { getCurrentContext } from "../runtime";
 
-export type Use<T> = ReturnType<typeof use<T>>;
-
 /**
  * Attach atom to a component. It will re-render the component whenever the atom changes.
  * Needs to be called inside a component. It will throw an error if called outside of a component.
