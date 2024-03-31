@@ -55,7 +55,7 @@ export default defineConfig({
         ],
     },
     devServer: {
-        port: 3030,
+        port: 3060,
         hot: true,
         historyApiFallback: true,
     },

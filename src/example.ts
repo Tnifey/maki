@@ -1,4 +1,4 @@
-import { atom, component, getAtomValue, html, setAtomValue, use } from "./main";
+import { component, getAtomValue, html, isotope, setAtomValue, use } from "./main";
 import { watch } from "./watch";
 
 component(() => {
@@ -9,7 +9,7 @@ component(() => {
     `;
 }).as('app-root');
 
-const $other = atom(0);
+const $other = isotope(0);
 
 component(() => {
     const [value, setValue, atom] = use(0);
@@ -17,11 +17,11 @@ component(() => {
     const inc = () => setValue((value) => value + 1);
     const dec = () => {
         setValue((value) => value - 1);
-        setAtomValue($other, () => value() + 1);
+        setAtomValue($other, (value) => value + 1);
     };
 
     watch(() => {
-        console.log("side effect", atom, getAtomValue($other));
+        console.log("side effect", value(), getAtomValue($other));
     }, [atom, $other]);
 
     return () => html`
