@@ -5,6 +5,7 @@ import { type Atom, type Isotope, isAtom, atomSubscribe, isIsotope } from "../st
  * Dependencies should be atoms, isotopes or use() results. Dependencies should be unique,
  * if the same atom, isotopes or use() result is used multiple times, only the first one will be used.
  * That is, the second and subsequent dependencies will be ignored.
+ * You can use watch outside of the component.
  * It should be noted that the callback function is called asynchronously.
  * We await the next tick to call the callback function. If dependencies change multiple times within the same tick,
  * the callback function will only be called once.
@@ -63,6 +64,6 @@ export function watch(fn: () => void, deps: (Atom<unknown> | Isotope<unknown>)[]
      */
     return () => {
         // biome-ignore lint/complexity/noForEach: <explanation>
-        unsubs.forEach((unsub) => unsub());
+        unsubs.forEach((unsub) => typeof unsub === "function" && unsub());
     };
 }
