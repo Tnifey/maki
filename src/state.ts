@@ -31,7 +31,7 @@ export function atomSubscribe<T>(
  * Checks if value has read, write, and toString methods
  */
 export function isAtom<T = unknown>(
-    value: unknown | Atom<T>,
+    value: T | Atom<T>,
 ): value is Atom<T> {
     const v = value as Atom<T>;
     return (
@@ -41,9 +41,6 @@ export function isAtom<T = unknown>(
     );
 }
 
-/**
- * Convert value to atom
- */
 export function toAtom<T>(
     value: T | Atom<T>,
 ): Atom<T> {
@@ -96,7 +93,7 @@ export function isotope<T>(value: T | Atom<T>, guard?: Guard<T>) {
     } : (set: T | ((x: T) => T)) => {
         return setAtomValue(atom, isFunction(set) ? set(getAtomValue(atom)) : set);
     };
-    const sub = (fn: () => void) => atomSubscribe(atom, fn);
+    const subscribe = (fn: () => void) => atomSubscribe(atom, fn);
 
     /**
      * Get atom value
@@ -113,8 +110,9 @@ export function isotope<T>(value: T | Atom<T>, guard?: Guard<T>) {
     }
 
     return Object.assign(getset, atom, [getter, setter, atom] as const, {
-        atom, [ISOTOPE]: true,
-        subscribe: sub,
+        atom,
+        subscribe,
+        [ISOTOPE]: true,
         [Symbol.iterator]: function* () {
             yield getter;
             yield setter;
