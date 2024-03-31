@@ -3,6 +3,11 @@
     "version": "0.0.1",
     "main": "src/main.ts",
     "license": "MIT",
+    "exports": {
+        ".": "./src/main.ts",
+        "./package.json": "./package.json",
+        "./*": "./src/*"
+    },
     "scripts": {
         "dev": "rspack dev --node-env=development",
         "dev:prod": "rspack dev --node-env=production",
