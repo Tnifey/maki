@@ -44,7 +44,17 @@ export function use<T>(
         return getter();
     }
 
-    return Object.assign(getset, atomic, { unsub, [USE]: true, atom: atomic }, [getter, setter, atomic] as const);
+    const use = Object.assign(getset, atomic, { unsub, [USE]: true, atom: atomic }, [getter, setter, atomic] as const);
+
+    Object.assign(use, {
+        [Symbol.iterator]: function* () {
+            yield getter;
+            yield setter;
+            yield atomic;
+        },
+    });
+
+    return use as typeof use;
 }
 
 export function isUseResult(value: unknown): value is Use<unknown> {

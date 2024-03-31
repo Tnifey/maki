@@ -12,17 +12,17 @@ component(() => {
 const $other = atom(0);
 
 component(() => {
-    const value = use(0);
+    const [value, setValue, atom] = use(0);
 
-    const inc = () => value((value) => value + 1);
+    const inc = () => setValue((value) => value + 1);
     const dec = () => {
-        value((value) => value - 1);
+        setValue((value) => value - 1);
         setAtomValue($other, () => value() + 1);
     };
 
     watch(() => {
-        console.log("side effect", value(), getAtomValue($other));
-    }, [value, $other]);
+        console.log("side effect", atom, getAtomValue($other));
+    }, [atom, $other]);
 
     return () => html`
         <div>
