@@ -1,7 +1,6 @@
 import { render } from "lit-html";
 import { setCurrentContext } from "./runtime";
-import { type TwindObserver, sheet, styleObserver } from "./twind";
-import type { Renderable } from "./lit-html";
+import { type TwindObserver, type Renderable, sheet, styleObserver } from "./templating";
 
 export type TemplateFn<Attrs> = (attrs: Attrs) => Renderable;
 export type MakiFactory<T> = ($: MakiComponent<T>) => TemplateFn<T>;
