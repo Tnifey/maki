@@ -79,10 +79,32 @@ import { atom } from 'maki';
 const $state = atom(0);
 ```
 
-## Hooks "Hooks"
-Hooks
+### `isotope`
+```typescript
+import { isotope } from 'maki';
 
-throws an error if called outside of a component function
+const state = isotope(0);
+
+// get value - with no arguments
+state(); // 0
+
+// set value - with an argument as new value
+state(1);
+// or pass a function
+state(previousValue => previousValue + 1);
+
+// subscribe to changes
+const unsub = state.subscribe((value) => {
+    console.log(value);
+});
+
+// isotopes can have guards, which are functions that are called before setting the value and can modify it before it is set
+const guarded = isotope(0, (value) => Math.min(10, Math.max(0, value)));
+guarded(100); // 10
+```
+
+## Hooks "Hooks"
+Hooks throws an error if called outside of a component function
 just like react
 
 ### event emitter for current component
@@ -97,6 +119,5 @@ component(($) => {
 
     // in template return a button that emits an event on click
     return () => html`<button onclick=${() => emit('event-name', 'event-data')}>Emit</button>`;
-}).as('ass');
+}).as('some-component');
 ```
-
