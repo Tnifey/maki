@@ -28,6 +28,7 @@ export function component<Attrs>(factory: MakiFactory<Attrs>) {
 
         constructor() {
             super();
+            this.style.display = "contents";
             setCurrentContext(this as unknown as MakiComponent<Attrs>);
             this.attachShadow({
                 mode: "open",

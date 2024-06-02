@@ -25,10 +25,8 @@ component(() => {
     }, [$other]);
 
     return () => html`
-        <div>
-            <button @click=${dec} type="button" class="px-4 py-2">dec</button>
-            <button @click=${inc} type="button" class="px-4 py-2">inc</button>
-            <code class="px-4 py-2">${value()}</code>
-        </div>
+        <button @click=${dec} type="button" class="px-4 py-2">dec</button>
+        <button @click=${inc} type="button" class="px-4 py-2">inc</button>
+        <code class="px-4 py-2">${value()}</code>
     `;
 }).as('app-counter');
