@@ -21,7 +21,7 @@ component(() => {
     };
 
     watch(() => {
-        console.log("side effect", value(), getAtomValue($other));
+        console.log("side effect", value(), $other());
     }, [$other]);
 
     return () => html`
