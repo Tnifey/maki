@@ -1,10 +1,15 @@
-import { component, html, type Isotope, isotope, use } from "./main";
+import { component, html, type Isotope, isotope, use, twind } from "./main";
 import { watch } from "./hooks/watch";
+import { tw } from "twind";
+import { ref } from "lit-html/directives/ref.js";
 
 component(() => {
+    const isOpened = use(false);
+
     return () => html`
         <div class="p-8">
             <app-counter></app-counter>
+            <app-menu .isOpened=${isOpened}></app-menu>
         </div>
     `;
 }).as('app-root');
@@ -40,3 +45,32 @@ component(($) => {
     const value = use(($ as unknown as { value: Isotope<number>; }).value);
     return () => html`<code class="px-4 py-2">${value()}</code>`;
 }).as('app-counter-number');
+
+component(($) => {
+    const isOpened = use(($ as unknown as { isOpened: Isotope<boolean>; }).isOpened);
+
+    return () => html`
+        <div class="relative inline-flex">
+            <button type="button" @click=${() => isOpened((v) => !v)} class="py-2 px-4">
+                ${isOpened() ? "close" : "open"}
+            </button>
+            <ul class=${tw(`absolute top-[100%] left-0 w-[200px] bg-black text-white rounded-sm ${isOpened() ? 'block' : 'hidden'}`)}>
+                <li>
+                    <button type="button" class="py-3 px-4 block w-full text-left">
+                        Profile
+                    </button>
+                </li>
+                <li>
+                    <button type="button" class="py-3 px-4 block w-full text-left">
+                        Settings
+                    </button>
+                </li>
+                <li>
+                    <button type="button" class="py-3 px-4 block w-full text-left">
+                        Logout
+                    </button>
+                </li>
+            </ul>
+        </div>
+    `;
+}).as('app-menu');
