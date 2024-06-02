@@ -1,15 +1,12 @@
-import { component, html, type Isotope, isotope, use, twind } from "./main";
+import { component, html, type Isotope, isotope, use, useRef } from "./main";
 import { watch } from "./hooks/watch";
 import { tw } from "twind";
-import { ref } from "lit-html/directives/ref.js";
 
 component(() => {
-    const isOpened = use(false);
-
     return () => html`
         <div class="p-8">
             <app-counter></app-counter>
-            <app-menu .isOpened=${isOpened}></app-menu>
+            <app-menu></app-menu>
         </div>
     `;
 }).as('app-root');
@@ -48,13 +45,19 @@ component(($) => {
 
 component(($) => {
     const isOpened = use(($ as unknown as { isOpened: Isotope<boolean>; }).isOpened);
+    const dialog = useRef<HTMLDivElement>();
+    const button = useRef<HTMLDivElement>();
+
+    watch(() => {
+        console.log('dialog value', dialog.value());
+    }, [dialog.value]);
 
     return () => html`
         <div class="relative inline-flex">
-            <button type="button" @click=${() => isOpened((v) => !v)} class="py-2 px-4">
+            <button ${button()} type="button" @click=${() => isOpened((v) => !v)} class="py-2 px-4">
                 ${isOpened() ? "close" : "open"}
             </button>
-            <ul class=${tw(`absolute top-[100%] left-0 w-[200px] bg-black text-white rounded-sm ${isOpened() ? 'block' : 'hidden'}`)}>
+            <ul ${dialog()} class=${tw(`absolute top-[100%] left-0 w-[200px] bg-black text-white rounded-sm ${isOpened() ? 'block' : 'hidden'}`)}>
                 <li>
                     <button type="button" class="py-3 px-4 block w-full text-left">
                         Profile
