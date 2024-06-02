@@ -1,4 +1,4 @@
-import { component, getAtomValue, html, isotope, use } from "./main";
+import { component, html, type Isotope, isotope, use } from "./main";
 import { watch } from "./hooks/watch";
 
 component(() => {
@@ -27,6 +27,16 @@ component(() => {
     return () => html`
         <button @click=${dec} type="button" class="px-4 py-2">dec</button>
         <button @click=${inc} type="button" class="px-4 py-2">inc</button>
-        <code class="px-4 py-2">${value()}</code>
+
+        <!-- pass isotope as property -->
+        <app-counter-number .value=${value}></app-counter-number>
     `;
 }).as('app-counter');
+
+component(($) => {
+    // get atom or isotope from parent as property
+    // use hook is needed to subscribe to the atom or isotope
+    // otherwise it will not re-render when the value changes
+    const value = use(($ as unknown as { value: Isotope<number>; }).value);
+    return () => html`<code class="px-4 py-2">${value()}</code>`;
+}).as('app-counter-number');
