@@ -35,16 +35,16 @@ component(() => {
     `;
 }).as('app-counter');
 
-component(($) => {
+component<unknown, { value: Isotope<number>; }>(($) => {
     // get atom or isotope from parent as property
     // use hook is needed to subscribe to the atom or isotope
     // otherwise it will not re-render when the value changes
-    const value = use(($ as unknown as { value: Isotope<number>; }).value);
+    const value = use($.value);
     return () => html`<code class="px-4 py-2">${value()}</code>`;
 }).as('app-counter-number');
 
-component(($) => {
-    const isOpened = use(($ as unknown as { isOpened: Isotope<boolean>; }).isOpened);
+component<unknown, { isOpened: Isotope<boolean>; }>(($) => {
+    const isOpened = use($.isOpened);
     const dialog = useRef<HTMLDivElement>();
     const button = useRef<HTMLDivElement>();
 

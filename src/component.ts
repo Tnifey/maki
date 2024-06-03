@@ -3,7 +3,7 @@ import { setCurrentContext } from "./runtime";
 import { type TwindObserver, type Renderable, sheet, styleObserver } from "./templating";
 
 export type TemplateFn<Attrs> = (attrs: Attrs) => Renderable;
-export type MakiFactory<T> = ($: MakiComponent<T>) => TemplateFn<T>;
+export type MakiFactory<T, P> = ($: MakiComponent<T> & P) => TemplateFn<T>;
 export type AnyMakiComponent = MakiComponent<Record<string, unknown>>;
 export interface MakiComponent<T> extends HTMLElement {
     template: TemplateFn<T>;
@@ -15,7 +15,7 @@ export interface MakiComponent<T> extends HTMLElement {
     cachedAttrs: T | null;
 }
 
-export function component<Attrs>(factory: MakiFactory<Attrs>) {
+export function component<Attrs, Props = Record<string, unknown>>(factory: MakiFactory<Attrs, Props>) {
     return class MakiComponent<T = Attrs>
         extends HTMLElement
         implements MakiComponent<T>
@@ -35,7 +35,7 @@ export function component<Attrs>(factory: MakiFactory<Attrs>) {
                 slotAssignment: "named",
             });
             this.internals = this.attachInternals();
-            this.template = factory(this as unknown as MakiComponent<Attrs>) as unknown as TemplateFn<T>;
+            this.template = factory(this as unknown as (MakiComponent<Attrs> & Props)) as unknown as TemplateFn<T>;
             this.shadowRoot.adoptedStyleSheets = [sheet.target];
             this.mutationObserver = new MutationObserver(() => this.render());
             setCurrentContext(null);
