@@ -49,8 +49,8 @@ component(($) => {
     const button = useRef<HTMLDivElement>();
 
     watch(() => {
-        console.log('dialog value', dialog.value());
-    }, [dialog.value]);
+        console.log('dialog value', dialog.current());
+    }, [dialog.current]);
 
     return () => html`
         <div class="relative inline-flex">
