@@ -16,7 +16,9 @@ export default defineConfig({
     },
     resolve: {
         extensions: ['.ts', '.js', '.tsx', '.jsx'],
-        tsConfigPath: path.resolve(__dirname, 'tsconfig.json'),
+        tsConfig: {
+            configFile: path.resolve(__dirname, 'tsconfig.json'),
+        },
         exportsFields: process.env.NODE_ENV === 'production' ? ['default'] : undefined,
     },
     watchOptions: {
@@ -25,9 +27,6 @@ export default defineConfig({
     },
     optimization: {
         minimize: true,
-    },
-    builtins: {
-        treeShaking: true,
     },
     target: 'web',
     module: {
