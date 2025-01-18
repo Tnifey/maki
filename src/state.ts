@@ -50,20 +50,52 @@ export function toAtom<T>(
 }
 
 /**
- * Atom with persistent storage in localStorage. It will be JSON serialized.
+ * Atom with storage, default localStorage. It will be JSON serialized.
  * @param key - Storage key
  * @param defaultValue - Initial value.
  * @returns Atom with persistent storage
  */
-export function persistentAtom<T>(key: string, defaultValue: T) {
-    const stored = window.localStorage.getItem(key);
-    const state = atom<T>(stored ? (JSON.parse(stored) as T) : defaultValue);
+export function storageAtom<T>(
+    key: string,
+    defaultValue: T,
+    storage: Storage = window.localStorage,
+    parse: (value: string) => T = JSON.parse,
+    stringify: (value: T) => string = JSON.stringify,
+) {
+    const stored = storage.getItem(key);
+    const state = atom<T>(stored ? (parse(stored) as T) : defaultValue);
 
     atomSubscribe(state, (value) => {
-        window.localStorage.setItem(key, JSON.stringify(value));
+        storage.setItem(key, stringify(value));
     });
 
     return state;
+}
+
+/**
+ * Atom with persistent storage in local storage.
+ * @param key - Storage key
+ * @param defaultValue - Initial value.
+ * @returns Atom with persistent storage
+ */
+export function persistentAtom<T>(
+    key: string,
+    defaultValue: T,
+) {
+    return storageAtom(key, defaultValue);
+}
+
+/**
+ * Atom with storage in session storage.
+ * @param key - Storage key
+ * @param defaultValue - Initial value.
+ * @returns Atom with persistent storage
+ */
+export function sessionAtom<T>(
+    key: string,
+    defaultValue: T,
+) {
+    return storageAtom(key, defaultValue, window.sessionStorage);
 }
 
 // biome-ignore lint/suspicious/noExplicitAny: <explanation>
