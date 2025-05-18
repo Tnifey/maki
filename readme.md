@@ -102,22 +102,3 @@ const unsub = state.subscribe((value) => {
 const guarded = isotope(0, (value) => Math.min(10, Math.max(0, value)));
 guarded(100); // 10
 ```
-
-## Hooks "Hooks"
-Hooks throws an error if called outside of a component function
-just like react
-
-### event emitter for current component
-
-```ts
-component(($) => {
-    function emit(name: string, init?: CustomEventInit) {
-        return $.dispatchEvent(new CustomEvent(name, init));
-    }
-
-    emit('event-name', 'event-data');
-
-    // in template return a button that emits an event on click
-    return () => html`<button onclick=${() => emit('event-name', 'event-data')}>Emit</button>`;
-}).as('some-component');
-```
