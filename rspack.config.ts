@@ -35,7 +35,12 @@ export default defineConfig({
                 test: /\.(j|t)s$/,
                 exclude: [/node_modules/],
                 loader: 'builtin:swc-loader',
-                options: { jsc: { parser: { syntax: 'typescript' } } },
+                options: {
+                    jsc: {
+                        target: 'es2022',
+                        parser: { syntax: 'typescript' },
+                    },
+                },
                 type: 'javascript/auto',
             },
         ],
