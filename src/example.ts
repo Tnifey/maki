@@ -1,6 +1,17 @@
-import { component, css, html, type Isotope, isotope, use, useRef } from "./main";
-import { watch } from "./hooks/watch";
-import { tw } from "twind";
+import {
+    component,
+    css,
+    html,
+    type Isotope,
+    isotope,
+    use,
+    useRef,
+    onDisconnected,
+    onConnected,
+    onBeforeConnect,
+    watch,
+    tw,
+} from "./main";
 
 component(() => {
     css`
@@ -55,31 +66,64 @@ component<unknown, { isOpened: Isotope<boolean>; }>(($) => {
     const isOpened = use($.isOpened);
     const dialog = useRef<HTMLDivElement>();
     const button = useRef<HTMLDivElement>();
+    const container = useRef<HTMLDivElement>();
+
+    $.addEventListener('keydown', (event) => {
+        console.log('keydown', event.composedPath()[0]);
+    })
+
+    onBeforeConnect(() => {
+        console.log('onBeforeConnect', {
+            container: container.current(), // null here
+        });
+    });
+
+    onConnected(() => {
+        console.log('menu connected', {
+            container: container.current(), // element here
+        });
+
+        return () => {
+            console.log('menu disconnected', {
+                container: container.current(), // element here
+            });
+        };
+    });
+
+    onDisconnected(() => {
+        console.log('menu connected', {
+            container: container.current(),
+        });
+    });
 
     watch(() => {
-        console.log('dialog value', dialog.current());
-    }, [dialog.current]);
+        console.log('container value', {
+            container: container.current(),
+        });
+    }, [container.current]);
+
+    window.addEventListener('click', (event) => {
+        if (!isOpened()) return;
+        const target = event.composedPath()[0] as HTMLElement;
+        const containerElement = container.current();
+        if (containerElement?.contains(target) || containerElement === target) return;
+        isOpened(false);
+    });
 
     return () => html`
-        <div class="relative inline-flex">
+        <div class="relative inline-flex" ${container()}>
             <button ${button()} type="button" @click=${() => isOpened((v) => !v)} class="py-2 px-4">
                 ${isOpened() ? "close" : "open"}
             </button>
             <ul ${dialog()} class=${tw(`absolute top-[100%] left-0 w-[200px] bg-black text-white rounded-sm ${isOpened() ? 'block' : 'hidden'}`)}>
                 <li>
-                    <button type="button" class="py-3 px-4 block w-full text-left">
-                        Profile
-                    </button>
+                    <button type="button" class="py-3 px-4 block w-full text-left">Profile</button>
                 </li>
                 <li>
-                    <button type="button" class="py-3 px-4 block w-full text-left">
-                        Settings
-                    </button>
+                    <button type="button" class="py-3 px-4 block w-full text-left">Settings</button>
                 </li>
                 <li>
-                    <button type="button" class="py-3 px-4 block w-full text-left">
-                        Logout
-                    </button>
+                    <button type="button" class="py-3 px-4 block w-full text-left">Logout</button>
                 </li>
             </ul>
         </div>

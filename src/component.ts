@@ -5,6 +5,7 @@ import { type TwindObserver, type Renderable, sheet, styleObserver } from "./tem
 export type TemplateFn<Attrs> = (attrs: Attrs) => Renderable;
 export type MakiFactory<T, P> = ($: MakiComponent<T> & P) => TemplateFn<T>;
 export type AnyMakiComponent = MakiComponent<Record<string, unknown>>;
+export type LifecycleFn = () => ((() => void) | void);
 export interface MakiComponent<T> extends HTMLElement {
     template: TemplateFn<T>;
     render: () => ReturnType<typeof render>;
@@ -13,6 +14,10 @@ export interface MakiComponent<T> extends HTMLElement {
     mutationObserver: MutationObserver;
     styleObserver: TwindObserver;
     cachedAttrs: T | null;
+    onBeforeConnect: LifecycleFn[];
+    onConnected: LifecycleFn[];
+    onDisconnected: LifecycleFn[];
+    applyStyles: (css: string) => HTMLStyleElement;
 }
 
 export function component<Attrs, Props = Record<string, unknown>>(factory: MakiFactory<Attrs, Props>) {
@@ -25,11 +30,14 @@ export function component<Attrs, Props = Record<string, unknown>>(factory: MakiF
         mutationObserver: MutationObserver;
         styleObserver: TwindObserver;
         cachedAttrs: T = null;
+        onBeforeConnect = [];
+        onDisconnected = [];
+        onConnected = [];
 
         constructor() {
             super();
             this.style.display = "contents";
-            setCurrentContext(this as unknown as MakiComponent<Attrs>);
+            setCurrentContext(this as unknown as AnyMakiComponent);
             this.attachShadow({
                 mode: "open",
                 slotAssignment: "named",
@@ -61,12 +69,31 @@ export function component<Attrs, Props = Record<string, unknown>>(factory: MakiF
         connectedCallback() {
             this.mutationObserver.observe(this, { attributes: true });
             this.styleObserver = styleObserver.observe(this.shadowRoot);
+            for (const fn of this.onBeforeConnect) {
+                if (typeof fn === "function") {
+                    const cleanup = fn();
+                    if (typeof cleanup === "function") {
+                        this.onDisconnected.push(cleanup);
+                    }
+                }
+            }
             this.render();
+            for (const fn of this.onConnected) {
+                if (typeof fn === "function") {
+                    const cleanup = fn();
+                    if (typeof cleanup === "function") {
+                        this.onDisconnected.push(cleanup);
+                    }
+                }
+            }
         }
 
         disconnectedCallback() {
             this.mutationObserver.disconnect();
             this.styleObserver.disconnect();
+            for (const fn of this.onDisconnected) {
+                if (typeof fn === "function") fn();
+            }
         }
 
         adoptedCallback() {
@@ -77,7 +104,7 @@ export function component<Attrs, Props = Record<string, unknown>>(factory: MakiF
             const style = document.createElement('style');
             style.textContent = css;
             this.shadowRoot.prepend(style);
-            return [css, style];
+            return style;
         }
 
         /**
