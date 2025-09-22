@@ -73,6 +73,13 @@ export function component<Attrs, Props = Record<string, unknown>>(factory: MakiF
             this.render();
         }
 
+        applyStyles(css: string) {
+            const style = document.createElement('style');
+            style.textContent = css;
+            this.shadowRoot.prepend(style);
+            return [css, style];
+        }
+
         /**
          * Register as web component, you can register the class only once
          * @param tagname - Tagname of the web component

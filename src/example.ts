@@ -1,8 +1,16 @@
-import { component, html, type Isotope, isotope, use, useRef } from "./main";
+import { component, css, html, type Isotope, isotope, use, useRef } from "./main";
 import { watch } from "./hooks/watch";
 import { tw } from "twind";
 
 component(() => {
+    css`
+        div {
+            display: block;
+            font-family: monospace;
+            background: #617;
+        }
+    `
+
     return () => html`
         <div class="p-8">
             <app-counter></app-counter>
