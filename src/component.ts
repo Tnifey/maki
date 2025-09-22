@@ -1,11 +1,16 @@
 import { render } from "lit-html";
 import { setCurrentContext } from "./runtime";
-import { type TwindObserver, type Renderable, sheet, styleObserver } from "./templating";
+import {
+    type TwindObserver,
+    type Renderable,
+    sheet,
+    styleObserver,
+} from "./templating";
 
 export type TemplateFn<Attrs> = (attrs: Attrs) => Renderable;
 export type MakiFactory<T, P> = ($: MakiComponent<T> & P) => TemplateFn<T>;
 export type AnyMakiComponent = MakiComponent<Record<string, unknown>>;
-export type LifecycleFn = () => ((() => void) | void);
+export type LifecycleFn = () => (() => void) | void;
 export interface MakiComponent<T> extends HTMLElement {
     template: TemplateFn<T>;
     render: () => ReturnType<typeof render>;
@@ -20,7 +25,9 @@ export interface MakiComponent<T> extends HTMLElement {
     applyStyles: (css: string) => HTMLStyleElement;
 }
 
-export function component<Attrs, Props = Record<string, unknown>>(factory: MakiFactory<Attrs, Props>) {
+export function component<Attrs, Props = Record<string, unknown>>(
+    factory: MakiFactory<Attrs, Props>,
+) {
     return class MakiComponent<T = Attrs>
         extends HTMLElement
         implements MakiComponent<T>
@@ -43,7 +50,9 @@ export function component<Attrs, Props = Record<string, unknown>>(factory: MakiF
                 slotAssignment: "named",
             });
             this.internals = this.attachInternals();
-            this.template = factory(this as unknown as (MakiComponent<Attrs> & Props)) as unknown as TemplateFn<T>;
+            this.template = factory(
+                this as unknown as MakiComponent<Attrs> & Props,
+            ) as unknown as TemplateFn<T>;
             this.shadowRoot.adoptedStyleSheets = [sheet.target];
             this.mutationObserver = new MutationObserver(() => this.render());
             setCurrentContext(null);
@@ -101,7 +110,7 @@ export function component<Attrs, Props = Record<string, unknown>>(factory: MakiF
         }
 
         applyStyles(css: string) {
-            const style = document.createElement('style');
+            const style = document.createElement("style");
             style.textContent = css;
             this.shadowRoot.prepend(style);
             return style;
@@ -111,8 +120,15 @@ export function component<Attrs, Props = Record<string, unknown>>(factory: MakiF
          * Register as web component, you can register the class only once
          * @param tagname - Tagname of the web component
          */
-        static as<Tagname extends string>(tagname: Tagname, options?: ElementDefinitionOptions) {
-            window.customElements.define(tagname, MakiComponent<Attrs>, options);
+        static as<Tagname extends string>(
+            tagname: Tagname,
+            options?: ElementDefinitionOptions,
+        ) {
+            window.customElements.define(
+                tagname,
+                MakiComponent<Attrs>,
+                options,
+            );
             return MakiComponent<Attrs>;
         }
     };

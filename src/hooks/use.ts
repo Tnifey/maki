@@ -8,10 +8,7 @@ import { getCurrentContext } from "../runtime";
  * @param guard - Guard function
  * @returns isotope
  */
-export function use<T>(
-    initialValue: T | Atom<T>,
-    guard?: Guard<T>,
-) {
+export function use<T>(initialValue: T | Atom<T>, guard?: Guard<T>) {
     const context = getCurrentContext();
     if (!context) throw new Error("Cannot call use() outside of a component");
 

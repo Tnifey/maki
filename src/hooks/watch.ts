@@ -1,4 +1,10 @@
-import { type Atom, type Isotope, isAtom, atomSubscribe, isIsotope } from "../state";
+import {
+    type Atom,
+    type Isotope,
+    isAtom,
+    atomSubscribe,
+    isIsotope,
+} from "../state";
 
 /**
  * Watch atom changes. Calls the callback function whenever any of the dependencies change.
@@ -12,49 +18,74 @@ import { type Atom, type Isotope, isAtom, atomSubscribe, isIsotope } from "../st
  * @param fn - Callback function
  * @param deps - Dependencies
  * @returns Unsubscribe function
- * 
+ *
  * @example
  * watch(() => {
  *    someting_to_do_on_dependency_change();
  * }, [value, other]);
- * 
+ *
  * @example
  * const unsub = watch(() => {
  *    someting_to_do_on_dependency_change();
  *    unsub(); // unsubscribe after first change
  * }, [value, other]);
- * 
+ *
  * @example
  * const unsub = watch(() => {
  *    someting_to_do_on_dependency_change();
  *    if (value() === 10) unsub(); // unsubscribe after value is 10
  * }, [value, other]);
  */
-export function watch(fn: () => void, deps: (Atom<unknown> | Isotope<unknown>)[] = []) {
-    if (typeof fn !== "function") throw new Error("watch() requires a function as the first argument");
-    if (!Array.isArray(deps)) throw new Error("watch() dependencies should be an array");
-    if (deps.length === 0) throw new Error("watch() requires at least one dependency");
+export function watch(
+    fn: () => void,
+    deps: (Atom<unknown> | Isotope<unknown>)[] = [],
+) {
+    if (typeof fn !== "function")
+        throw new Error("watch() requires a function as the first argument");
+    if (!Array.isArray(deps))
+        throw new Error("watch() dependencies should be an array");
+    if (deps.length === 0)
+        throw new Error("watch() requires at least one dependency");
 
     let callee = 0;
 
-    const unsubs: (() => void)[] = deps.map((dep, i, all) => {
-        if (!isAtom(dep)) throw new Error("watch() can only watch atoms, isotopes, use() results");
-        if (all.indexOf(dep) !== i) return console.warn([
-            "watch() dependencies should be unique",
-            "Use the same atom, isotope or use() result only once",
-            "Second and subsequent dependencies will be ignored",
-        ].join("\n"));
+    const unsubs: (() => void)[] = deps
+        .map((dep, i, all) => {
+            if (!isAtom(dep))
+                throw new Error(
+                    "watch() can only watch atoms, isotopes, use() results",
+                );
+            if (all.indexOf(dep) !== i)
+                return console.warn(
+                    [
+                        "watch() dependencies should be unique",
+                        "Use the same atom, isotope or use() result only once",
+                        "Second and subsequent dependencies will be ignored",
+                    ].join("\n"),
+                );
 
-        return atomSubscribe(isIsotope(dep) ? dep.atom : dep, () => {
-            if (!callee) Promise.resolve().then(() => { fn(); }).catch(console.error).finally(() => { callee = 0; });
-            callee++;
-        });
-    }).filter(Boolean) as (() => void)[];
+            return atomSubscribe(isIsotope(dep) ? dep.atom : dep, () => {
+                if (!callee)
+                    Promise.resolve()
+                        .then(() => {
+                            fn();
+                        })
+                        .catch(console.error)
+                        .finally(() => {
+                            callee = 0;
+                        });
+                callee++;
+            });
+        })
+        .filter(Boolean) as (() => void)[];
 
-    if (unsubs.length === 0) throw new Error([
-        "watch() requires at least one valid dependency",
-        "Dependencies should be atoms, isotopes or use() results",
-    ].join("\n"));
+    if (unsubs.length === 0)
+        throw new Error(
+            [
+                "watch() requires at least one valid dependency",
+                "Dependencies should be atoms, isotopes or use() results",
+            ].join("\n"),
+        );
 
     /**
      * Unsubscribe watch

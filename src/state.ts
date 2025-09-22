@@ -12,17 +12,11 @@ export function getAtomValue<T>(value: Atom<T>) {
     return getDefaultStore().get(value);
 }
 
-export function setAtomValue<T>(
-    value: Atom<T>,
-    fn: T | ((prev: T) => T),
-) {
+export function setAtomValue<T>(value: Atom<T>, fn: T | ((prev: T) => T)) {
     return getDefaultStore().set(value, fn);
 }
 
-export function atomSubscribe<T>(
-    value: Atom<T>,
-    fn: (value: T) => void,
-) {
+export function atomSubscribe<T>(value: Atom<T>, fn: (value: T) => void) {
     return getDefaultStore().sub(value, () => fn(getAtomValue(value)));
 }
 
@@ -30,9 +24,7 @@ export function atomSubscribe<T>(
  * Naive type check for atom
  * Checks if value has read, write, and toString methods
  */
-export function isAtom<T = unknown>(
-    value: T | Atom<T>,
-): value is Atom<T> {
+export function isAtom<T = unknown>(value: T | Atom<T>): value is Atom<T> {
     const v = value as Atom<T>;
     return (
         typeof v?.read === "function" &&
@@ -41,9 +33,7 @@ export function isAtom<T = unknown>(
     );
 }
 
-export function toAtom<T>(
-    value: T | Atom<T>,
-): Atom<T> {
+export function toAtom<T>(value: T | Atom<T>): Atom<T> {
     if (isIsotope(value)) return value.atom as Atom<T>;
     if (isAtom(value)) return value;
     return atom<T>(value);
@@ -78,10 +68,7 @@ export function storageAtom<T>(
  * @param defaultValue - Initial value.
  * @returns Atom with persistent storage
  */
-export function persistentAtom<T>(
-    key: string,
-    defaultValue: T,
-) {
+export function persistentAtom<T>(key: string, defaultValue: T) {
     return storageAtom(key, defaultValue);
 }
 
@@ -91,10 +78,7 @@ export function persistentAtom<T>(
  * @param defaultValue - Initial value.
  * @returns Atom with persistent storage
  */
-export function sessionAtom<T>(
-    key: string,
-    defaultValue: T,
-) {
+export function sessionAtom<T>(key: string, defaultValue: T) {
     return storageAtom(key, defaultValue, window.sessionStorage);
 }
 
@@ -106,7 +90,9 @@ function isFunction(value: any): value is (...args: any[]) => any {
 export const ISOTOPE: unique symbol = Symbol("isotope");
 
 export function isIsotope(value: unknown): value is Isotope<unknown> {
-    return isAtom(value) && typeof value === "function" && value[ISOTOPE] === true;
+    return (
+        isAtom(value) && typeof value === "function" && value[ISOTOPE] === true
+    );
 }
 
 /**
@@ -119,12 +105,21 @@ export function isotope<T>(value: T | Atom<T>, guard?: Guard<T>) {
     const atom = toAtom(value);
 
     const getter = () => getAtomValue(atom);
-    const setter = typeof guard === "function" ? (set: T | ((x: T) => T)) => {
-        const value = getAtomValue(atom);
-        return setAtomValue(atom, guard(isFunction(set) ? set(value) : set, value));
-    } : (set: T | ((x: T) => T)) => {
-        return setAtomValue(atom, isFunction(set) ? set(getAtomValue(atom)) : set);
-    };
+    const setter =
+        typeof guard === "function"
+            ? (set: T | ((x: T) => T)) => {
+                  const value = getAtomValue(atom);
+                  return setAtomValue(
+                      atom,
+                      guard(isFunction(set) ? set(value) : set, value),
+                  );
+              }
+            : (set: T | ((x: T) => T)) => {
+                  return setAtomValue(
+                      atom,
+                      isFunction(set) ? set(getAtomValue(atom)) : set,
+                  );
+              };
     const subscribe = (fn: () => void) => atomSubscribe(atom, fn);
 
     /**
@@ -141,14 +136,19 @@ export function isotope<T>(value: T | Atom<T>, guard?: Guard<T>) {
         return getter();
     }
 
-    return Object.assign(getset, atom, [getter, setter, atom] as const, {
+    return Object.assign(
+        getset,
         atom,
-        subscribe,
-        [ISOTOPE]: true,
-        [Symbol.iterator]: function* () {
-            yield getter;
-            yield setter;
-            yield atom;
-        },
-    } as const);
+        [getter, setter, atom] as const,
+        {
+            atom,
+            subscribe,
+            [ISOTOPE]: true,
+            [Symbol.iterator]: function* () {
+                yield getter;
+                yield setter;
+                yield atom;
+            },
+        } as const,
+    );
 }
