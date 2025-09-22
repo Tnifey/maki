@@ -32,24 +32,11 @@ export default defineConfig({
     module: {
         rules: [
             {
-                exclude: /node_modules/,
-                oneOf: [
-                    {
-                        test: /\.(t|j)sx?$/,
-                        exclude: /node_modules/,
-                        use: {
-                            loader: 'builtin:swc-loader',
-                            options: {
-                                jsc: {
-                                    parser: {
-                                        syntax: 'typescript',
-                                        target: 'esnext',
-                                    },
-                                },
-                            },
-                        },
-                    },
-                ],
+                test: /\.(j|t)s$/,
+                exclude: [/node_modules/],
+                loader: 'builtin:swc-loader',
+                options: { jsc: { parser: { syntax: 'typescript' } } },
+                type: 'javascript/auto',
             },
         ],
     },
