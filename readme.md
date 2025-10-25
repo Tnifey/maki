@@ -60,7 +60,7 @@ component(
 
 ## API?
 
-### `use` - use atom or state
+### `use` - use atom, isotope or state
 must be called inside a component function.
 
 ```ts
