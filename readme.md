@@ -49,13 +49,13 @@ component(
         <pre>count:  ${count()}</pre>
         <pre>global: ${someGlobal()}</pre>
     `;
-}).as('do-not-use-this-component');
+}).as('irresponsible-component');
 ```
 
 ```html
 <script src="path/to/js.js" async></script>
 
-<do-not-use-this-component></do-not-use-this-component>
+<irresponsible-component></irresponsible-component>
 ```
 
 ## API?
