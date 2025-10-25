@@ -2,6 +2,7 @@ import {
     type Isotope,
     component,
     css,
+    getEventTarget,
     html,
     isotope,
     onBeforeConnect,
@@ -104,7 +105,7 @@ component<unknown, { isOpened: Isotope<boolean> }>(($) => {
 
     window.addEventListener("click", (event) => {
         if (!isOpened()) return;
-        const target = event.composedPath()[0] as HTMLElement;
+        const target = getEventTarget(event) as HTMLElement;
         const containerElement = container.current();
         if (containerElement?.contains(target) || containerElement === target)
             return;
