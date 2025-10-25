@@ -1,8 +1,8 @@
 import {
     type Atom,
     type Isotope,
-    isAtom,
     atomSubscribe,
+    isAtom,
     isIsotope,
 } from "../state";
 

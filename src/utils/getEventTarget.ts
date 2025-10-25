@@ -8,7 +8,7 @@
  *
  * Same as event.composedPath()[0] if composed
  * Otherwise same as event.target
- * 
+ *
  * @example
  * element.addEventListener("click", (event) => {
  *    const target = getEventTarget(event);

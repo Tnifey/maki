@@ -1,5 +1,5 @@
-import { type Atom, type Guard, isotope } from "../state";
 import { getCurrentContext } from "../runtime";
+import { type Atom, type Guard, isotope } from "../state";
 
 /**
  * Attach atom to a component. It will re-render the component whenever the atom changes.

@@ -1,8 +1,8 @@
 import { render } from "lit-html";
 import { setCurrentContext } from "./runtime";
 import {
-    type TwindObserver,
     type Renderable,
+    type TwindObserver,
     sheet,
     styleObserver,
 } from "./templating";

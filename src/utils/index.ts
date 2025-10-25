@@ -1,1 +1,1 @@
-export { getEventTarget } from './getEventTarget';
+export { getEventTarget } from "./getEventTarget";

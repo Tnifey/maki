@@ -1,16 +1,16 @@
 import {
+    type Isotope,
     component,
     css,
     html,
-    type Isotope,
     isotope,
+    onBeforeConnect,
+    onConnected,
+    onDisconnected,
+    tw,
     use,
     useRef,
-    onDisconnected,
-    onConnected,
-    onBeforeConnect,
     watch,
-    tw,
 } from "./main";
 
 component(() => {
