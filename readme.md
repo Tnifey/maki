@@ -18,11 +18,12 @@ It is like 10 lines of code gzipped. Or fork it and do not create PRs or issues.
 
 ## Example
 
-```tsx
+```ts
 import { html, component, use, atom } from 'maki';
 
 // global state variable
 const $global = atom(0);
+const $globalIsotope = isotope(0);
 
 // define a component
 component(
@@ -32,6 +33,8 @@ component(
     const [count, setCount] = use(0);
     // global state variable
     const [someGlobal, setSomeGlobal] = use($global);
+    // global state with isotope is the same as atom
+    const [someGlobalIsotope, setSomeGlobalIsotope] = use($globalIsotope);
 
     function incrementCount(event) {
         setCount(count() + 1)
@@ -41,13 +44,19 @@ component(
         setSomeGlobal((count) => count + 1)
     }
 
+    function incrementGlobalIsotope(event) {
+        setSomeGlobalIsotope((count) => count + 1)
+    }
+
     // this called when the component is rendered
     return ($argsObject /* this.args */) => html`
         <h1>${count()}</h1>
         <button @click=${incrementCount}>Increment count</button>
         <button @click=${incrementGlobal}>Increment global</button>
+        <button @click=${incrementGlobalIsotope}>Increment global isotope</button>
         <pre>count:  ${count()}</pre>
         <pre>global: ${someGlobal()}</pre>
+        <pre>global isotope: ${someGlobalIsotope()}</pre>
     `;
 }).as('irresponsible-component');
 ```
@@ -58,29 +67,52 @@ component(
 <irresponsible-component></irresponsible-component>
 ```
 
+See `src/example.ts` for more.
+
 ## API?
 
 ### `use` - use atom, isotope or state
-must be called inside a component function.
+_`use` must be called inside a component function._
+`use` attaches the state to the component, so when the state changes, the component re-renders.
 
 ```ts
+// simple use
+const state = use(0);
+state(); // get value
+state(1); // set value
+state((current) => current + 1); // update value with a function
+
+// with destructuring
+
 const [state, setState] = use(0);
+state(); // get value
+setState(1); // set value
+setState((current) => current + 1); // update value with a function
 
-// or atom
+// with atom, or isotope
 
+// const $state = isotope(0);
 const $state = atom(0);
 const [state, setState] = use($state);
+state(); // get value
+setState(1); // set value
+setState((current) => current + 1); // update value with a function
 ```
 
-### `atom` - see jotai/vanilla
+### `atom` / `isotope` - state variable
+_`atom` and `isotope` can be used outside of components as well._
+It creates a state variable that can be used with `use` inside components, or directly.
+
+#### `atom` - see `jotai/vanilla`
 ```ts
 import { atom } from 'maki';
 // or import { atom } from 'jotai/vanilla';
 const $state = atom(0);
 ```
 
-### `isotope`
-```typescript
+#### `isotope` - enhanced jotai atom
+
+```ts
 import { isotope } from 'maki';
 
 const state = isotope(0);
