@@ -9,8 +9,7 @@ import { type Atom, type Guard, isotope } from "../state";
  * @returns isotope
  */
 export function use<T>(initialValue: T | Atom<T>, guard?: Guard<T>) {
-    const context = getCurrentContext();
-    if (!context) throw new Error("Cannot call use() outside of a component");
+    const context = getCurrentContext("use");
 
     const atom = isotope(initialValue, guard);
     return Object.assign(atom, {
