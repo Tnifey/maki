@@ -1,8 +1,10 @@
 import path from "node:path";
 import { defineConfig } from "@rspack/cli";
 
+const isProduction = process.env.NODE_ENV === "production";
+
 export default defineConfig({
-    mode: "development",
+    mode: isProduction ? "production" : "development",
     devtool: "source-map",
     context: path.resolve(__dirname, "src"),
     entry: {
@@ -19,7 +21,7 @@ export default defineConfig({
         tsConfig: {
             configFile: path.resolve(__dirname, "tsconfig.json"),
         },
-        exportsFields: process.env.NODE_ENV === "production" ? ["default"] : undefined,
+        exportsFields: isProduction ? ["default"] : undefined,
     },
     watchOptions: {
         ignored: /node_modules/,
