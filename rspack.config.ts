@@ -5,12 +5,14 @@ const isProduction = process.env.NODE_ENV === "production";
 
 export default defineConfig({
     mode: isProduction ? "production" : "development",
-    devtool: "source-map",
+    devtool: isProduction ? false : "source-map",
     context: path.resolve(__dirname, "src"),
-    entry: {
-        example: "./example.ts",
-        maki: "./main.ts",
-    },
+    entry: isProduction
+        ? { maki: "./main.ts" }
+        : {
+              example: "./example.ts",
+              maki: "./main.ts",
+          },
     output: {
         path: path.resolve(__dirname, "./dist"),
         filename: "[name].js",
@@ -21,15 +23,12 @@ export default defineConfig({
         tsConfig: {
             configFile: path.resolve(__dirname, "tsconfig.json"),
         },
-        exportsFields: isProduction ? ["default"] : undefined,
     },
     watchOptions: {
         ignored: /node_modules/,
         followSymlinks: true,
     },
-    optimization: {
-        minimize: true,
-    },
+    optimization: { minimize: true },
     target: "web",
     module: {
         rules: [

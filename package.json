@@ -14,7 +14,7 @@
         "build": "rspack build --node-env=production",
         "build:dev": "rspack build --node-env=development",
         "lint": "lint-staged",
-        "format": "npx @biomejs/biome check --fix",
+        "format": "yarn exec biome check --write",
         "prepare": "husky"
     },
     "dependencies": {
@@ -33,6 +33,6 @@
         "typescript": "^5.9.3"
     },
     "lint-staged": {
-        "*.(tsx?|jsx?|json)": ["npx @biomejs/biome check --apply"]
+        "*.(tsx?|jsx?|json)": ["yarn exec biome check --write"]
     }
 }
