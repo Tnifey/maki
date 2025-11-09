@@ -6,7 +6,7 @@
  * @param event - Event object
  * @returns Event target or first element in the composed path
  *
- * Same as event.composedPath()[0] if composed
+ * Same as event.composedPath()?.[0] if composed
  * Otherwise same as event.target
  *
  * @example
@@ -14,6 +14,10 @@
  *    const target = getEventTarget(event);
  *    console.log(target);
  * });
+ *
+ * @see https://developer.mozilla.org/en-US/docs/Web/API/Web_components#shadow_dom
+ * @see https://developer.mozilla.org/en-US/docs/Web/API/Event/composed
+ * @see https://developer.mozilla.org/en-US/docs/Web/API/Event/composedPath
  */
 export function getEventTarget(event: Event): EventTarget | null {
     if (event?.composed) return event.composedPath()?.[0];
