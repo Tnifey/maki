@@ -17,19 +17,19 @@
         "prepare": "husky"
     },
     "dependencies": {
-        "jotai": "^2.14.0",
+        "jotai": "^2.15.1",
         "lit-html": "^3.3.1",
         "twind": "^0.16.19"
     },
     "devDependencies": {
         "@biomejs/biome": "1.9.4",
-        "@rspack/cli": "^1.5.6",
-        "@rspack/core": "^1.5.6",
-        "@types/node": "^18",
+        "@rspack/cli": "^1.6.1",
+        "@rspack/core": "^1.6.1",
+        "@types/node": "^24",
         "husky": "9.1.7",
         "lint-staged": "15.5.1",
         "ts-node": "^10.9.2",
-        "typescript": "^5.9.2"
+        "typescript": "^5.9.3"
     },
     "lint-staged": {
         "*.(tsx?|jsx?|json)": ["npx @biomejs/biome check --apply"]

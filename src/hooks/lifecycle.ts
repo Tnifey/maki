@@ -1,4 +1,4 @@
-import { getCurrentContext } from "src/runtime";
+import { getCurrentContext } from "../runtime";
 import type { LifecycleFn } from "../component";
 
 export function onConnected(fn: LifecycleFn) {
