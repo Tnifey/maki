@@ -107,8 +107,7 @@ component<unknown, { isOpened: Isotope<boolean> }>(($) => {
         if (!isOpened()) return;
         const target = getEventTarget(event) as HTMLElement;
         const containerElement = container.current();
-        if (containerElement?.contains(target) || containerElement === target)
-            return;
+        if (containerElement?.contains(target) || containerElement === target) return;
         isOpened(false);
     });
 

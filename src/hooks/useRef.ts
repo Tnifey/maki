@@ -12,8 +12,5 @@ const getReferenceElementDirective = directive(
 
 export function useRef<T>(defaults: T = null) {
     const current = isotope<T>(defaults);
-    return Object.assign(
-        () => getReferenceElementDirective((element: T) => current(element)),
-        { current } as const,
-    );
+    return Object.assign(() => getReferenceElementDirective((element: T) => current(element)), { current } as const);
 }

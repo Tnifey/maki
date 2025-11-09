@@ -26,11 +26,7 @@ export function atomSubscribe<T>(value: Atom<T>, fn: (value: T) => void) {
  */
 export function isAtom<T = unknown>(value: T | Atom<T>): value is Atom<T> {
     const v = value as Atom<T>;
-    return (
-        typeof v?.read === "function" &&
-        typeof v?.write === "function" &&
-        typeof v?.toString === "function"
-    );
+    return typeof v?.read === "function" && typeof v?.write === "function" && typeof v?.toString === "function";
 }
 
 export function toAtom<T>(value: T | Atom<T>): Atom<T> {
@@ -90,9 +86,7 @@ function isFunction(value: any): value is (...args: any[]) => any {
 export const ISOTOPE: unique symbol = Symbol("isotope");
 
 export function isIsotope(value: unknown): value is Isotope<unknown> {
-    return (
-        isAtom(value) && typeof value === "function" && value[ISOTOPE] === true
-    );
+    return isAtom(value) && typeof value === "function" && value[ISOTOPE] === true;
 }
 
 /**
@@ -109,16 +103,10 @@ export function isotope<T>(value: T | Atom<T>, guard?: Guard<T>) {
         typeof guard === "function"
             ? (set: T | ((x: T) => T)) => {
                   const value = getAtomValue(atom);
-                  return setAtomValue(
-                      atom,
-                      guard(isFunction(set) ? set(value) : set, value),
-                  );
+                  return setAtomValue(atom, guard(isFunction(set) ? set(value) : set, value));
               }
             : (set: T | ((x: T) => T)) => {
-                  return setAtomValue(
-                      atom,
-                      isFunction(set) ? set(getAtomValue(atom)) : set,
-                  );
+                  return setAtomValue(atom, isFunction(set) ? set(getAtomValue(atom)) : set);
               };
     const subscribe = (fn: () => void) => atomSubscribe(atom, fn);
 

@@ -14,6 +14,7 @@
         "build": "rspack build --node-env=production",
         "build:dev": "rspack build --node-env=development",
         "lint": "lint-staged",
+        "format": "npx @biomejs/biome check --fix",
         "prepare": "husky"
     },
     "dependencies": {

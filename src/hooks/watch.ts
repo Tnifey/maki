@@ -1,10 +1,4 @@
-import {
-    type Atom,
-    type Isotope,
-    atomSubscribe,
-    isAtom,
-    isIsotope,
-} from "../state";
+import { type Atom, type Isotope, atomSubscribe, isAtom, isIsotope } from "../state";
 
 /**
  * Watch atom changes. Calls the callback function whenever any of the dependencies change.
@@ -36,25 +30,16 @@ import {
  *    if (value() === 10) unsub(); // unsubscribe after value is 10
  * }, [value, other]);
  */
-export function watch(
-    fn: () => void,
-    deps: (Atom<unknown> | Isotope<unknown>)[] = [],
-) {
-    if (typeof fn !== "function")
-        throw new Error("watch() requires a function as the first argument");
-    if (!Array.isArray(deps))
-        throw new Error("watch() dependencies should be an array");
-    if (deps.length === 0)
-        throw new Error("watch() requires at least one dependency");
+export function watch(fn: () => void, deps: (Atom<unknown> | Isotope<unknown>)[] = []) {
+    if (typeof fn !== "function") throw new Error("watch() requires a function as the first argument");
+    if (!Array.isArray(deps)) throw new Error("watch() dependencies should be an array");
+    if (deps.length === 0) throw new Error("watch() requires at least one dependency");
 
     let callee = 0;
 
     const unsubs: (() => void)[] = deps
         .map((dep, i, all) => {
-            if (!isAtom(dep))
-                throw new Error(
-                    "watch() can only watch atoms, isotopes, use() results",
-                );
+            if (!isAtom(dep)) throw new Error("watch() can only watch atoms, isotopes, use() results");
             if (all.indexOf(dep) !== i)
                 return console.warn(
                     [

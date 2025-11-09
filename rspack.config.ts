@@ -19,8 +19,7 @@ export default defineConfig({
         tsConfig: {
             configFile: path.resolve(__dirname, "tsconfig.json"),
         },
-        exportsFields:
-            process.env.NODE_ENV === "production" ? ["default"] : undefined,
+        exportsFields: process.env.NODE_ENV === "production" ? ["default"] : undefined,
     },
     watchOptions: {
         ignored: /node_modules/,
