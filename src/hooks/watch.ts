@@ -52,9 +52,7 @@ export function watch(fn: () => void, deps: (Atom<unknown> | Isotope<unknown>)[]
             return atomSubscribe(isIsotope(dep) ? dep.atom : dep, () => {
                 if (!callee)
                     Promise.resolve()
-                        .then(() => {
-                            fn();
-                        })
+                        .then(() => fn())
                         .catch(console.error)
                         .finally(() => {
                             callee = 0;
